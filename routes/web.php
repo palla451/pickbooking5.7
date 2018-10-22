@@ -118,6 +118,8 @@ Route::get('/myip', 'WordpressController@myIp');
 
 Route::post('/bookingsupport', 'BookingsupportController@bookingsupport');
 
+Route::post('/bookingstoreudpate/{string}', 'BookingController@storeupdate')->name('bookingstore.update');
+
 
 
 

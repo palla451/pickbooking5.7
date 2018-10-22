@@ -19,7 +19,8 @@ class Room extends Model
         'type',
         'location',
         'price_id',
-        'location_id'
+        'location_id',
+        'price'
     ];
 
     /**
