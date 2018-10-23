@@ -133,41 +133,49 @@
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Lavagna Interattiva">Lavagna Interattiva
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="checkbox" class="form-check-input" id="lavagna_interattiva" autofocus>
-                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                    <label class="btn btn-default blue">
+                        <input type="checkbox" class="form-check-input" id="lavagna_interattiva" checked="false">
+                        <p class="errorContent text-center alert alert-danger hidden"></p>
+                    </label>
                 </div>
 
                 <div class="col-md-2">
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Videoproiettore">Videoproiettore
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="checkbox" class="form-check-input" id="videoproiettore" autofocus>
-                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                    <label class="btn btn-default blue">
+                        <input type="checkbox" class="form-check-input" value="70" id="videoproiettore" checked="false">
+                        <p class="errorContent text-center alert alert-danger hidden"></p>
+                    </label>
                 </div>
 
                 <div class="col-md-2">
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Videoconferenza">Videoconferenza
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="checkbox" class="form-check-input" id="videoconferenza" autofocus>
-                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                    <label class="btn btn-default blue">
+                        <input type="checkbox" class="form-check-input" id="videoconferenza" checked="false">
+                        <p class="errorContent text-center alert alert-danger hidden"></p>
+                    </label>
                 </div>
 
                 <div class="col-md-2">
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Webconference">Webconference
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="checkbox" class="form-check-input" id="webconference" autofocus>
-                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                    <label class="btn btn-default blue">
+                        <input type="checkbox" class="form-check-input" id="webconference" checked="false">
+                        <p class="errorContent text-center alert alert-danger hidden"></p>
+                    </label>
                 </div>
-
-
                 <div class="col-md-2">
-                    <a type="text" data-toggle="tooltip" data-placement="top" title="Videoregistrazione">Videoregistraione
+                    <a type="text" data-toggle="tooltip" data-placement="top" title="Videoregistrazione">Videoregistrazione
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="checkbox" class="form-check-input" id="Videoregistrazione" autofocus>
-                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                    <label class="btn btn-default blue">
+                        <input type="checkbox" class="form-check-input" id="videoregistrazione" checked="false">
+                        <p class="errorContent text-center alert alert-danger hidden"></p>
+                    </label>
                 </div>
             </div>
         </div>

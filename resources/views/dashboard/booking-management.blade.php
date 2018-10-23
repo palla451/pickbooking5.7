@@ -556,6 +556,11 @@
                 })
                 .done(function(result){
                     $('#searchResult').DataTable().destroy();
+                            $('#webconference').prop("checked",false);
+                            $('#videoproiettore').prop("checked",false);
+                            $('#videoregistrazione').prop("checked",false);
+                            $('#lavagna_interattiva').prop("checked",false);
+                            $('#videoconferenza').prop("checked",false);
                     $('#result').show();
                     $('#searchResult').DataTable({
                         data: result,
@@ -573,11 +578,8 @@
                         // start optionals
                         var coffee_break = $('#coffee_break').val()*6.5;
                         var quick_lunch = $('#quick_lunch').val()*1;
-                        var videoproiettore = $('#videoproiettore').val()*50;
                         var permanent_coffee = $('#permanent_coffee').val()*7;
                         var wifi = $('#wifi').val()*50;
-                        var videoconferenza = $('#videoconferenza').val()*1;
-                        var webconference = $('#webconference').val()*1;
                         var lavagna_foglimobili = $('#lavagna_foglimobili').val()*1;
                         var stampante = $('#stampante').val()*1;
                         var permanent_coffeeplus = $('#permanent_coffeeplus').val()*1;
@@ -588,17 +590,44 @@
                         var upgrade_banda20mb = $('#upgrade_banda20mb').val()*1;
                         var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
                         var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
-                        var videoregistrazione = $('#videoregistrazione').val()*1;
                         var fattorino = $('#fattorino').val()*1;
-                        var lavagna_interattiva = $('#lavagna_interattiva').val()*1;
-                        var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
-                        console.log(tot_optional);
+
+                        // START checkbox
+                        if($('#lavagna_interattiva').prop("checked",true))
+                            var lavagna_interattiva = 50;
+                         else
+                            var lavagna_interattiva = 0;
+
+                        if($('#videoproiettore').prop("checked",true))
+                            var videoproiettore = 25;
+                        else
+                            var videoproiettore = 0;
+
+                        if($('#videoconferenza').prop("checked",true))
+                            var videoconferenza = 35;
+                        else
+                            var videoproiettore = 0;
+
+                        if($('#webconference').prop("checked",true))
+                            var webconference = 25;
+                        else
+                            var webconference = 0;
+
+                        if($('#videoregistrazione').prop("checked",true))
+                            var videoregistrazione = 75;
+                        else
+                            var videoregistrazione = 0;
+                        //END checkbox
+
+                       // var tot_optional= lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
+                       var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
+                     console.log(tot_optional);
                         // end optional
 
                         var roomName = $(this).data('name');
                         var roomId = $(this).data('id');
                         var url = $(this).data('remote');
-                        console.log(url);
+                     //   console.log(url);
                         var token = $('meta[name="csrf-token"]').attr('content');
                         var clickedRow = $('#searchResult')
                                             .DataTable()
