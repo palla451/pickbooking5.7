@@ -127,7 +127,6 @@ class BookingController extends Controller
 				// return $wp_users;
 
                 $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
-				// return $wp_posts;
 
                 $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
 
@@ -135,24 +134,13 @@ class BookingController extends Controller
 
                 $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->get();
 
-             //   return $billing_first_name[1]->meta_value;
-
-
-               // $billing_last_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_last_name')->get();
-               // $billing_address_1 = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_address_1')->get();
-
-
                 $first_name = $billing_first_name[0]->meta_value;
                 $last_name = $billing_first_name[1]->meta_value;
                 $address_1 = $billing_first_name[2]->meta_value;
 
-
-
-
                 $id_wp_posts = $wp_posts[0]->ID+1;
 
                 $id_order_item = $wp_woocommerce_order_items[0]->order_item_id;
-
 
                 $ip = request()->ip();
 
@@ -165,7 +153,6 @@ class BookingController extends Controller
                 $this->insert_woocommerce_order_items($db,$id_order_item,$id_wp_posts,$roomName,$start,$end);
 
                 $this->insert_woocommerce_order_itemmeta($db,$price[0]->price);
-
 
             // END
 
@@ -584,10 +571,6 @@ class BookingController extends Controller
                     return response()->make($result);
                 }
 
-
-
-
-
             } else {
 
                 // Query ricerca disponibilita //
@@ -660,17 +643,15 @@ class BookingController extends Controller
             }
 
         } else {
-        //    return $diff_day;
 
-         //   $diff_day = $diff_day + 1;
-
-            $duration = (integer)$diff_sec / 3600;
-
-        //   return $diff_day.' - '.$duration;
+            $duration = (integer)$diff_sec / 3600; // in ore
 
             if ($duration > 4) {
 
+                $diff_day = $diff_day + 1;
+
                 $duration = 8;
+
                 // Query ricerca disponibilita //
                 $rooms = Room::Available($start, $end,$diff_day)
                     ->join('prices', function ($join) use ($duration) {
@@ -681,9 +662,14 @@ class BookingController extends Controller
                     ->where('location', '=', $data['location'])// Search in base alla sede
                     ->get(['name', 'pax', 'id', 'location', 'type', 'price']);
 
+                foreach ($rooms as $room) {
+                    $room->price = $room->price * $diff_day;
+                }
+
+
                 // Create book button
                 $rooms = $rooms->each(function ($room) {
-                    $bookUrl = route('bookings.store');
+                    $bookUrl = route('bookingstore.update',$room->price);
                     $bookBtn = '<button class="btn btn-xs btn-primary btn-book"';
                     $bookBtn .= 'data-remote="' . $bookUrl . '" data-name="' . $room->name . '" data-id="' . $room->id . '">';
                     $bookBtn .= '<span class="glyphicon glyphicon-edit"></span> ';
@@ -702,43 +688,98 @@ class BookingController extends Controller
                 return response()->make($result);
             } else {
 
+                if($duration <> 0){
 
-                // Query ricerca disponibilita //
-                $rooms = Room::Available($start, $end)
-                    ->join('prices', function ($join) use ($duration) {
-                        $join->on('prices.price_id', '=', 'rooms.id')
-                            ->where('prices.duration', '=', $duration);
-                    })
-                    ->where('pax', '=', $data['pax'])
-                    ->where('location', '=', $data['location'])// Search in base alla sede
-                    ->get(['name', 'pax', 'id', 'location', 'type', 'price']);
+                    $duration_day = 8;
+
+                    // Query ricerca disponibilita //
+                    $rooms = Room::Available($start, $end)
+                        ->join('prices', function ($join) use ($duration_day) {
+                            $join->on('prices.price_id', '=', 'rooms.id')
+                                ->where('prices.duration', '=', $duration_day);
+                        })
+                        ->where('pax', '=', $data['pax'])
+                        ->where('location', '=', $data['location'])// Search in base alla sede
+                        ->get(['name', 'pax', 'id', 'location', 'type', 'price']);
+
+                    $num = $rooms->count();
 
 
-                foreach ($rooms as $room) {
-                    $room->price = $room->price * $diff_day;
+                    $rooms_hour = Room::Available($start, $end)
+                        ->join('prices', function ($join) use ($duration) {
+                            $join->on('prices.price_id', '=', 'rooms.id')
+                                ->where('prices.duration', '=', $duration);
+                        })
+                        ->where('pax', '=', $data['pax'])
+                        ->where('location', '=', $data['location'])// Search in base alla sede
+                        ->get([ 'price']);
+
+                    for($i=0; $i<$num; $i++){
+                        $rooms[$i]['price'] =  ($rooms[$i]['price'] * $diff_day)+$rooms_hour[$i]['price'];
+                    }
+
+
+                    // Create book button
+                    $rooms = $rooms->each(function ($room) {
+                        $bookUrl = route('bookingstore.update',$room->price);
+                        $bookBtn = '<button class="btn btn-xs btn-primary btn-book"';
+                        $bookBtn .= 'data-remote="' . $bookUrl . '" data-name="' . $room->name . '" data-id="' . $room->id . '">';
+                        $bookBtn .= '<span class="glyphicon glyphicon-edit"></span> ';
+                        $bookBtn .= __('Book');
+                        $bookBtn .= '</button>';
+
+                        $room->action = $bookBtn;
+                    });
+
+                    $result = [];
+
+                    foreach ($rooms as $key => $value) {
+                        $result[] = $value;
+                    }
+
+                    return response()->make($result);
+                } else{
+
+                    $duration_day = 8;
+
+                    // Query ricerca disponibilita //
+                    $rooms = Room::Available($start, $end)
+                        ->join('prices', function ($join) use ($duration_day) {
+                            $join->on('prices.price_id', '=', 'rooms.id')
+                                ->where('prices.duration', '=', $duration_day);
+                        })
+                        ->where('pax', '=', $data['pax'])
+                        ->where('location', '=', $data['location'])// Search in base alla sede
+                        ->get(['name', 'pax', 'id', 'location', 'type', 'price']);
+
+                    foreach($rooms as $room){
+                        $room->price = $room->price * $diff_day;
+                    }
+
+
+                    // Create book button
+                    $rooms = $rooms->each(function ($room) {
+                        $bookUrl = route('bookingstore.update',$room->price);
+                        $bookBtn = '<button class="btn btn-xs btn-primary btn-book"';
+                        $bookBtn .= 'data-remote="' . $bookUrl . '" data-name="' . $room->name . '" data-id="' . $room->id . '">';
+                        $bookBtn .= '<span class="glyphicon glyphicon-edit"></span> ';
+                        $bookBtn .= __('Book');
+                        $bookBtn .= '</button>';
+
+                        $room->action = $bookBtn;
+                    });
+
+                    $result = [];
+
+                    foreach ($rooms as $key => $value) {
+                        $result[] = $value;
+                    }
+
+                    return response()->make($result);
                 }
 
-
-                // Create book button
-                $rooms = $rooms->each(function ($room) {
-                    $bookUrl = route('bookings.store');
-                    $bookBtn = '<button class="btn btn-xs btn-primary btn-book"';
-                    $bookBtn .= 'data-remote="' . $bookUrl . '" data-name="' . $room->name . '" data-id="' . $room->id . '">';
-                    $bookBtn .= '<span class="glyphicon glyphicon-edit"></span> ';
-                    $bookBtn .= __('Book');
-                    $bookBtn .= '</button>';
-
-                    $room->action = $bookBtn;
-                });
-
-                $result = [];
-
-                foreach ($rooms as $key => $value) {
-                    $result[] = $value;
-                }
-
-                return response()->make($result);
             }
+
 
         }
     }
@@ -896,13 +937,16 @@ class BookingController extends Controller
 
     // se la risorsa non è disponibile passo alla risorsa più grande mantenendo il prezzo che della risorsa inferior
 
-    public function storeupdate(StoreBooking $request, $prezzo){
+    public function storeupdate(StoreBooking $request, $prezzo)
+    {
 
         $db = DB::connection('mysql2');
 
         $user = Auth::user();
 
         $data = $request->all();
+
+        // return $data;
 
         $roomId = $data['roomId'];
 
@@ -914,8 +958,7 @@ class BookingController extends Controller
 
         $time = explode(' - ', $data['bookingTime']);
 
-        $user_name = User::find( Auth::user()->id);
-
+        $user_name = User::find(Auth::user()->id);
 
         $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $time[0])
             ->toDateTimeString();
@@ -930,13 +973,6 @@ class BookingController extends Controller
         $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
         $duration = $diff_sec / 3600;
 
-
-        if ($diff_day == 0) {
-
-            if ($duration > 4) {
-
-                $duration = 8;
-
                 $booking = Booking::create([
                     'room_id' => $data['roomId'],
                     'booked_by' => Auth::user()->id,
@@ -948,18 +984,14 @@ class BookingController extends Controller
                     'price' => $price
                 ]);
 
-
-
                 // START insert order in woocommerce
 
                 // dati necessari da ricavare sul db di woocommerce
                 // ed inserire l'ordine nel carrello
 
                 $wp_users = $db->table('wp_users')->where('user_email','=',$user->email)->get();
-                // return $wp_users;
 
                 $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
-                // return $wp_posts;
 
                 $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
 
@@ -967,24 +999,13 @@ class BookingController extends Controller
 
                 $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->get();
 
-                //   return $billing_first_name[1]->meta_value;
-
-
-                // $billing_last_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_last_name')->get();
-                // $billing_address_1 = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_address_1')->get();
-
-
                 $first_name = $billing_first_name[0]->meta_value;
                 $last_name = $billing_first_name[1]->meta_value;
                 $address_1 = $billing_first_name[2]->meta_value;
 
-
-
-
                 $id_wp_posts = $wp_posts[0]->ID+1;
 
                 $id_order_item = $wp_woocommerce_order_items[0]->order_item_id;
-
 
                 $ip = request()->ip();
 
@@ -998,7 +1019,6 @@ class BookingController extends Controller
 
                 $this->insert_woocommerce_order_itemmeta($db,$price);
 
-
                 // END
 
                 return response()->json([
@@ -1006,162 +1026,6 @@ class BookingController extends Controller
                 ]);
 
 
-            } else {
-
-                $booking = Booking::create([
-                    'room_id' => $data['roomId'],
-                    'booked_by' => Auth::user()->id,
-                    'booked_name' => User::find(Auth::user()->id)->name,
-                    'start_date' => $start,
-                    'end_date' => $end,
-                    'location_id' => $room->location_id,
-                    'location' => $room->location,
-                    'price' => $price
-                ]);
-
-                // START insert order in woocommerce
-
-                // dati necessari da ricavare sul db di woocommerce
-                // ed inserire l'ordine nel carrello
-
-                $wp_users = $db->table('wp_users')->where('user_email','=',$user->email)->get();
-
-                $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
-
-                $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
-
-                $id_wp_user = $wp_users[0]->ID;
-
-                $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_first_name')->get();
-                $billing_last_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_last_name')->get();
-                $billing_address_1 = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_address_1')->get();
-
-
-                $first_name = $billing_first_name[0]->meta_value;
-                $last_name = $billing_last_name[0]->meta_value;
-                $address_1 = $billing_address_1[0]->meta_value;
-
-
-                $id_wp_posts = $wp_posts[0]->ID+1;
-
-                $id_order_item = $wp_woocommerce_order_items[0]->order_item_id;
-
-
-                $ip = request()->ip();
-
-                $agent= request()->header('User-Agent');
-
-
-                $this->woo_insert_post($db,$id_wp_posts,$id_wp_user);
-
-
-                $this->woo_insert_postmeta($db,$id_wp_posts,$id_wp_user,$ip,$agent,$price,$first_name,$last_name,$address_1);
-
-                $this->insert_woocommerce_order_items($db,$id_order_item,$id_wp_posts,$roomName,$start,$end);
-
-                $this->insert_woocommerce_order_itemmeta($db,$price);
-
-
-                // END
-
-                //     return $optional;
-
-                return response()->json([
-                    'message' => __('Room :name is successfully booked!', ['name' => $data['roomName']])
-                ]);
-            }
-
-        } else {
-            $diff_day = $diff_day + 1;
-
-            $duration = 8;
-
-            $price_final = ($price) * $diff_day;
-
-
-            $booking = Booking::create([
-                'room_id' => $data['roomId'],
-                'booked_by' => Auth::user()->id,
-                'booked_name' => User::find(Auth::user()->id)->name,
-                'start_date' => $start,
-                'end_date' => $end,
-                'location_id' => $room->location_id,
-                'location' => $room->location,
-                'price' => $price_final
-            ]);
-
-            // START insert order in woocommerce
-
-            // dati necessari da ricavare sul db di woocommerce
-            // ed inserire l'ordine nel carrello
-
-            $wp_users = $db->table('wp_users')->where('user_email','=',$user->email)->get();
-
-            $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
-
-            $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
-
-            $id_wp_user = $wp_users[0]->ID;
-
-            $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_first_name')->get();
-            $billing_last_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_last_name')->get();
-            $billing_address_1 = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->where('meta_key','=','billing_address_1')->get();
-
-
-            $first_name = $billing_first_name[0]->meta_value;
-            $last_name = $billing_last_name[0]->meta_value;
-            $address_1 = $billing_address_1[0]->meta_value;
-
-
-            $id_wp_posts = $wp_posts[0]->ID+1;
-
-            $id_order_item = $wp_woocommerce_order_items[0]->order_item_id;
-
-
-            $ip = request()->ip();
-
-            $agent= request()->header('User-Agent');
-
-
-            $this->woo_insert_post($db,$id_wp_posts,$id_wp_user);
-
-
-            $this->woo_insert_postmeta($db,$id_wp_posts,$id_wp_user,$ip,$agent,$price,$first_name,$last_name,$address_1);
-
-            $this->insert_woocommerce_order_items($db,$id_order_item,$id_wp_posts,$roomName,$start,$end);
-
-            $this->insert_woocommerce_order_itemmeta($db,$price);
-
-
-            // END
-
-
-            return response()->json([
-                'message' => __('Room :name is successfully booked!', ['name' => $data['roomName']])
-            ]);
-        }
-
-        $duration = $diff_sec / 3600;
-
-        if ($duration > 5) {
-
-            $duration = 8;
-
-
-        } else {
-
-        }
-
-        Booking::create([
-            'room_id' => $data['roomId'],
-            'booked_by' => Auth::user()->id,
-            'booked_name' => User::find(Auth::user()->id)->name,
-            'start_date' => $start,
-            'end_date' => $end,
-            'location_id' => $room->location_id,
-            'location' => $room->location,
-            'price' => $price
-        ]);
 
 
     }

@@ -185,6 +185,9 @@
                                      </tr>
                                      </tfoot>
                                 </table>
+                                <table>
+                                    @include('optionals.form')
+                                </table>
                             </div>
                         </div>@endpermission
                     </div>
@@ -194,9 +197,11 @@
     </section>
 @endsection
 
+
+
         <!-- Modal form to add a post -->
     <!-- Modal form to add a post -->
-    <div id="addModal" class="modal fade bd-example-modal-lg" role="dialog">
+  <!--  <div id="addModal" class="modal fade bd-example-modal-lg" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="padding: 10px;background-color: #ECF0F5;">
                 <div class="modal-header">
@@ -393,7 +398,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
 
 
 
@@ -564,6 +570,31 @@
                     }).on('click', '.btn-book', function(event){
                         event.preventDefault();
 
+                        // start optionals
+                        var coffee_break = $('#coffee_break').val()*6.5;
+                        var quick_lunch = $('#quick_lunch').val()*1;
+                        var videoproiettore = $('#videoproiettore').val()*50;
+                        var permanent_coffee = $('#permanent_coffee').val()*7;
+                        var wifi = $('#wifi').val()*50;
+                        var videoconferenza = $('#videoconferenza').val()*1;
+                        var webconference = $('#webconference').val()*1;
+                        var lavagna_foglimobili = $('#lavagna_foglimobili').val()*1;
+                        var stampante = $('#stampante').val()*1;
+                        var permanent_coffeeplus = $('#permanent_coffeeplus').val()*1;
+                        var connessione_viacavo = $('#connessione_viacavo').val()*1;
+                        var integrazione_permanentcoffee = $('#integrazione_permanentcoffee').val()*1;
+                        var upgrade_banda10mb = $('#upgrade_banda10mb').val()*1;
+                        var upgrade_banda8mb = $('#upgrade_banda8mb').val()*1;
+                        var upgrade_banda20mb = $('#upgrade_banda20mb').val()*1;
+                        var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
+                        var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
+                        var videoregistrazione = $('#videoregistrazione').val()*1;
+                        var fattorino = $('#fattorino').val()*1;
+                        var lavagna_interattiva = $('#lavagna_interattiva').val()*1;
+                        var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
+                        console.log(tot_optional);
+                        // end optional
+
                         var roomName = $(this).data('name');
                         var roomId = $(this).data('id');
                         var url = $(this).data('remote');
@@ -589,10 +620,31 @@
                                 '_token' : token,
                                 'roomId' : roomId,
                                 'roomName' : roomName,
-                                'bookingTime': bookingTime
+                                'bookingTime': bookingTime,
+                                'coffee_break' : coffee_break,
+                                'quick_lunch' : quick_lunch,
+                                'videoproiettore': videoproiettore,
+                                'permanent_coffee': permanent_coffee,
+                                'wifi': wifi,
+                                'videoconferenza': videoconferenza,
+                                'webconference': webconference,
+                                'lavagna_foglimobili': lavagna_foglimobili,
+                                'stampante': stampante,
+                                'permanent_coffeeplus': permanent_coffeeplus,
+                                'connessione_viacavo': connessione_viacavo,
+                                'integrazione_permanentcoffee': integrazione_permanentcoffee,
+                                'upgrade_banda10mb': upgrade_banda10mb,
+                                'upgrade_banda8mb': upgrade_banda8mb,
+                                'upgrade_banda20mb': upgrade_banda20mb,
+                                'wirless_4mb20accessi': wirless_4mb20accessi,
+                                'wirless_8mb35accessi': wirless_8mb35accessi,
+                                'videoregistrazione': videoregistrazione,
+                                'fattorino': fattorino,
+                                'lavagna_interattiva': lavagna_interattiva
                             };
+                            console.log(input);
                             $.ajax({
-                                type: "POST",
+                                type: "post",
                                 url: url,
                                 data: input,
                                 dataType: 'json'
