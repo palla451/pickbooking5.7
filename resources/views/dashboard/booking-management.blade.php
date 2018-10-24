@@ -575,7 +575,7 @@
                     }).on('click', '.btn-book', function(event){
                         event.preventDefault();
 
-                        // start optionals
+                // START optionals
                         var coffee_break = $('#coffee_break').val()*6.5;
                         var quick_lunch = $('#quick_lunch').val()*1;
                         var permanent_coffee = $('#permanent_coffee').val()*7;
@@ -590,6 +590,7 @@
                         var upgrade_banda20mb = $('#upgrade_banda20mb').val()*1;
                         var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
                         var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
+                        var wirless_10mb50accessi = $('#wirless_10mb50accessi').val()*1;
                         var fattorino = $('#fattorino').val()*1;
 
                         // START checkbox
@@ -636,16 +637,14 @@
 
                         var tot_optional = lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
 
-                      // alert(tot_optional);
 
                        var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
-                   //  console.log(tot_optional);
-                        // end optional
+
+                // END optionals
 
                         var roomName = $(this).data('name');
                         var roomId = $(this).data('id');
                         var url = $(this).data('remote');
-                     //   console.log(url);
                         var token = $('meta[name="csrf-token"]').attr('content');
                         var clickedRow = $('#searchResult')
                                             .DataTable()
@@ -685,6 +684,7 @@
                                 'upgrade_banda20mb': upgrade_banda20mb,
                                 'wirless_4mb20accessi': wirless_4mb20accessi,
                                 'wirless_8mb35accessi': wirless_8mb35accessi,
+                                'wirless_10mb50accessi': wirless_10mb50accessi,
                                 'videoregistrazione': videoregistrazione,
                                 'fattorino': fattorino,
                                 'lavagna_interattiva': lavagna_interattiva,

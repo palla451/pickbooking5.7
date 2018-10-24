@@ -112,12 +112,21 @@
                 </div>
 
                 <div class="col-6 col-md-2">
-                    <a type="text" data-toggle="tooltip" data-placement="top" title="Wirless 8mb 35accessi">Wirless 4mb 35accessi
+                    <a type="text" data-toggle="tooltip" data-placement="top" title="Wirless 8mb 35accessi">Wirless 8mb 35accessi
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <input type="number" class="form-control" id="wirless_8mb35accessi" value="0" autofocus>
                     <p class="errorContent text-center alert alert-danger hidden"></p>
                 </div>
+
+                <div class="col-6 col-md-2">
+                    <a type="text" data-toggle="tooltip" data-placement="top" title="Wirless 10mb 50accessi">Wirless 10mb 50accessi
+                        <i class="glyphicon glyphicon-question-sign"></i>
+                    </a>
+                    <input type="number" class="form-control" id="wirless_10mb50accessi" value="0" autofocus>
+                    <p class="errorContent text-center alert alert-danger hidden"></p>
+                </div>
+
                 <div class="col-6 col-md-2">
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Fattorino">Fattorino
                         <i class="glyphicon glyphicon-question-sign"></i>

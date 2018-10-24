@@ -74,6 +74,8 @@ class BookingController extends Controller
 
         $data = $request->all();
 
+     //   return $data;
+
         $roomId = $data['roomId'];
 
         $roomName = $data['roomName'];
@@ -115,6 +117,33 @@ class BookingController extends Controller
                     'location_id' => $room->location_id,
                     'location' => $room->location,
                     'price' => $price[0]->price
+                ]);
+
+               // dd($booking->id);
+
+                $optional = BookingOptional::create([
+                    'booking_id' => $booking->id,
+                    'coffee_break' => $data['coffee_break'],
+                    'quick_lunch' => $data['quick_lunch'],
+                    'videoproiettore' => $data['videoproiettore'],
+                    'permanent_coffee' => $data['permanent_coffee'],
+                    'wifi' => $data['wifi'],
+                    'videoconferenza' => $data['videoconferenza'],
+                    'webconference' => $data['webconference'],
+                    'lavagna_foglimobili' => $data['lavagna_foglimobili'],
+                    'stampante' => $data['stampante'],
+                    'permanent_coffeeplus' => $data['permanent_coffeeplus'],
+                    'connessione_viacavo' => $data['permanent_coffeeplus'],
+                    'integrazione_permanentcoffee' => $data['integrazione_permanentcoffee'],
+                    'upgrade_banda10mb' => $data['upgrade_banda10mb'],
+                    'upgrade_banda8mb' => $data['upgrade_banda8mb'],
+                    'upgrade_banda20mb' => $data['upgrade_banda20mb'],
+                    'wirless_4mb20accessi' => $data['wirless_4mb20accessi'],
+                    'wirless_8mb35accessi' => $data['wirless_8mb35accessi'],
+                    'videoregistrazione' => $data['videoregistrazione'],
+                    'fattorino' => $data['fattorino'],
+                    'lavagna_interattiva' => $data['lavagna_interattiva'],
+                    'tot_optional' => $data['tot_optional']
                 ]);
 
 
