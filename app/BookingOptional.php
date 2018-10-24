@@ -26,6 +26,7 @@ class BookingOptional extends Model
         'upgrade_banda20mb',
         'wirless_4mb20accessi',
         'wirless_8mb35accessi',
+        'wirless_10mb50accessi',
         'videoregistrazione',
         'fattorino',
         'lavagna_interattiva',

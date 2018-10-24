@@ -123,7 +123,7 @@
                     <a type="text" data-toggle="tooltip" data-placement="top" title="Wirless 10mb 50accessi">Wirless 10mb 50accessi
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
-                    <input type="number" class="form-control" id="wirless_10mb50accessi" value="0" autofocus>
+                    <input type="number" class="form-control" id=" wirless_10mb50accessi" value="0" autofocus>
                     <p class="errorContent text-center alert alert-danger hidden"></p>
                 </div>
 
