@@ -134,7 +134,7 @@
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <label class="btn btn-default blue">
-                        <input type="checkbox" class="form-check-input" id="lavagna_interattiva" checked="false">
+                        <input type="checkbox" class="custom-control-input" id="lavagna_interattiva">
                         <p class="errorContent text-center alert alert-danger hidden"></p>
                     </label>
                 </div>
@@ -144,7 +144,7 @@
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <label class="btn btn-default blue">
-                        <input type="checkbox" class="form-check-input" value="70" id="videoproiettore" checked="false">
+                        <input type="checkbox" class="custom-control-input" id="videoproiettore">
                         <p class="errorContent text-center alert alert-danger hidden"></p>
                     </label>
                 </div>
@@ -154,7 +154,7 @@
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <label class="btn btn-default blue">
-                        <input type="checkbox" class="form-check-input" id="videoconferenza" checked="false">
+                        <input type="checkbox" class="custom-control-input" id="videoconferenza">
                         <p class="errorContent text-center alert alert-danger hidden"></p>
                     </label>
                 </div>
@@ -164,7 +164,7 @@
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <label class="btn btn-default blue">
-                        <input type="checkbox" class="form-check-input" id="webconference" checked="false">
+                        <input type="checkbox" class="custom-control-input" id="webconference" value="0">
                         <p class="errorContent text-center alert alert-danger hidden"></p>
                     </label>
                 </div>
@@ -173,11 +173,12 @@
                         <i class="glyphicon glyphicon-question-sign"></i>
                     </a>
                     <label class="btn btn-default blue">
-                        <input type="checkbox" class="form-check-input" id="videoregistrazione" checked="false">
+                        <input type="checkbox" class="custom-control-input" id="videoregistrazione" value="0">
                         <p class="errorContent text-center alert alert-danger hidden"></p>
                     </label>
                 </div>
             </div>
         </div>
+
     </form>
   </div>
