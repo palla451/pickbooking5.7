@@ -591,57 +591,55 @@
                         var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
                         var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
                         var fattorino = $('#fattorino').val()*1;
-                        var lavagna_interattiva = 0;
-                        var videoproiettore = 0;
-                        var webconference = 0;
-                        var videoregistrazione = 0;
 
                         // START checkbox
                         if ($('#lavagna_interattiva').is(':checked')){
                             var lavagna_interattiva = 75;
+                            //console.log(lavagna_interattiva);
                         } else {
                             var lavagna_interattiva = 0;
+                            // console.log(lavagna_interattiva);
                         }
 
                         if ($('#videoproiettore').is(':checked')){
                             var videoproiettore = 55;
-                          //  alert(videoproiettore);
+                        //    console.log(videoproiettore);
                         } else {
                             var videoproiettore = 0;
-                         //   alert(videoproiettore);
+                            //    console.log(videoproiettore);
                         }
 
                         if ($('#videoconferenza').is(':checked')){
                             var videoconferenza = 45;
-                           // alert(videoconferenza);
+                            //    console.log(videoconferenza);
                         } else {
                             var videoconferenza = 0;
-                           // alert(videoconferenza);
+                            // console.log(videoconferenza);
                         }
 
                         if ($('#webconference').is(':checked')){
                             var webconference = 35;
-                          //  alert(webconference);
+                            // console.log(webconference);
                         } else {
                             var webconference = 0;
-                          //  alert(webconference);
+                            // console.log(webconference);
                         }
 
                         if ($('#videoregistrazione').is(':checked')){
                             var videoregistrazione = 25;
-                           // alert(videoregistrazione);
+                            // console.log(videoregistrazione);
                         } else {
                             var videoregistrazione = 0;
-                          //  alert(videoregistrazione);
+                            // console.log(videoregistrazione);
                         }
                         //END checkbox
 
                         var tot_optional = lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
 
-                     //   alert(tot_optional);
+                      // alert(tot_optional);
 
                        var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
-                     console.log(tot_optional);
+                   //  console.log(tot_optional);
                         // end optional
 
                         var roomName = $(this).data('name');
@@ -689,7 +687,8 @@
                                 'wirless_8mb35accessi': wirless_8mb35accessi,
                                 'videoregistrazione': videoregistrazione,
                                 'fattorino': fattorino,
-                                'lavagna_interattiva': lavagna_interattiva
+                                'lavagna_interattiva': lavagna_interattiva,
+                                'tot_optional' : tot_optional
                             };
                             console.log(input);
                             $.ajax({
