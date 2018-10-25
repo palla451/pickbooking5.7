@@ -74,7 +74,7 @@ class BookingController extends Controller
 
         $data = $request->all();
 
-     //   return $data;
+    //   return $data;
 
         $roomId = $data['roomId'];
 
@@ -116,8 +116,13 @@ class BookingController extends Controller
                     'end_date' => $end,
                     'location_id' => $room->location_id,
                     'location' => $room->location,
-                    'price' => $price[0]->price
+                    'price' => $price[0]->price,
+                    'total_price' => $price[0]->price + $data['tot_optional'],
+                    'price_tot_optional' => $data['tot_optional']
                 ]);
+
+             //   return $booking;
+
 
                // dd($booking->id);
 
@@ -975,8 +980,6 @@ class BookingController extends Controller
 
         $data = $request->all();
 
-        // return $data;
-
         $roomId = $data['roomId'];
 
         $roomName = $data['roomName'];
@@ -1002,16 +1005,44 @@ class BookingController extends Controller
         $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
         $duration = $diff_sec / 3600;
 
-                $booking = Booking::create([
-                    'room_id' => $data['roomId'],
-                    'booked_by' => Auth::user()->id,
-                    'booked_name' => User::find(Auth::user()->id)->name,
-                    'start_date' => $start,
-                    'end_date' => $end,
-                    'location_id' => $room->location_id,
-                    'location' => $room->location,
-                    'price' => $price
-                ]);
+            $booking = Booking::create([
+                'room_id' => $data['roomId'],
+                'booked_by' => Auth::user()->id,
+                'booked_name' => User::find(Auth::user()->id)->name,
+                'start_date' => $start,
+                'end_date' => $end,
+                'location_id' => $room->location_id,
+                'location' => $room->location,
+                'price' => $price,
+                'total_price' => $price + $data['tot_optional'],
+                'price_tot_optional' => $data['tot_optional']
+            ]);
+
+           $optional = BookingOptional::create([
+                'booking_id' => $booking->id,
+                'coffee_break' => $data['coffee_break'],
+                'quick_lunch' => $data['quick_lunch'],
+                'videoproiettore' => $data['videoproiettore'],
+                'permanent_coffee' => $data['permanent_coffee'],
+                'wifi' => $data['wifi'],
+                'videoconferenza' => $data['videoconferenza'],
+                'webconference' => $data['webconference'],
+                'lavagna_foglimobili' => $data['lavagna_foglimobili'],
+                'stampante' => $data['stampante'],
+                'permanent_coffeeplus' => $data['permanent_coffeeplus'],
+                'connessione_viacavo' => $data['permanent_coffeeplus'],
+                'integrazione_permanentcoffee' => $data['integrazione_permanentcoffee'],
+                'upgrade_banda10mb' => $data['upgrade_banda10mb'],
+                'upgrade_banda8mb' => $data['upgrade_banda8mb'],
+                'upgrade_banda20mb' => $data['upgrade_banda20mb'],
+                'wirless_4mb20accessi' => $data['wirless_4mb20accessi'],
+                'wirless_8mb35accessi' => $data['wirless_8mb35accessi'],
+                'videoregistrazione' => $data['videoregistrazione'],
+                'fattorino' => $data['fattorino'],
+                'lavagna_interattiva' => $data['lavagna_interattiva'],
+                'tot_optional' => $data['tot_optional']
+            ]);
+
 
                 // START insert order in woocommerce
 

@@ -29,7 +29,9 @@ class Booking extends Model
         'location_id',
         'price',
         'optional_id',
-        'room_setup'
+        'room_setup',
+        'total_price',
+        'price_tot_optional'
     ];
 
     /**

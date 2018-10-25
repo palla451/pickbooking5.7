@@ -162,7 +162,7 @@
                                 <!-- /.row -->
                             </form>
                             <div id="result">
-                                <h3>{{ __('Available room') }}:</h3>
+                                <h2>{{ __('Available room') }}:</h2>
                                 <table id="searchResult" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                      <thead>
                                      <tr>
@@ -185,9 +185,11 @@
                                      </tr>
                                      </tfoot>
                                 </table>
-                                <table>
-                                    @include('optionals.form')
-                                </table>
+                                <p>
+                                    <table>
+                                        @include('optionals.form')
+                                    </table>
+                                </p>
                             </div>
                         </div>@endpermission
                     </div>
