@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\BookingOptional;
 use App\Bookingsupport;
 use App\Http\Controllers\BookingController;
 use App\Location;
@@ -23,79 +24,50 @@ class ApiWooCommerce extends Controller
 {
     public function index($string)
     {
-
         $arr = explode("2+!&A9", $string, 2);
-
         $email = base64_decode($arr[0]);
         $resource = base64_decode($arr[1]);
-
         $user = DB::table('users')->where('email', '=', $email)->get();
 
         $rooms = Room::all();
         $sedi = Location::all();
 
         if ($user[0]->name == 'guest'){
-
             $computer = $this->ip_macaddress();
-
             $random = $this->generateRandomString();
-
-          //  return $random;
-
+            //  return $random;
             Auth::loginUsingId($user[0]->id);
-
             return view('dashboard.booking-management-guest',compact('rooms','sedi','resource','computer','random'));
-
         } else {
-
             $computer = $this->ip_macaddress();
-
             $array = explode( ' - ',$computer);
-
             $ip = $array[0];
             $mac_address = $array[1];
-
             $response = $this->controller($ip,$mac_address);
-
             if($response == null){
-
                 Auth::loginUsingId($user[0]->id);
-
                 return view('dashboard.booking-management-register',compact('rooms','sedi','resource'));
-
             } else {
-
                 Auth::loginUsingId($user[0]->id);
-
                 $user = Auth::user();
-
                 $roomId =  $response[0]['roomId'];
                 $roomName =  $response[0]['roomName'];
-
                 $bookingTime = $response[0]['bookingTime'];
-
                 $time = explode(' - ', $bookingTime);
-
                 $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $time[0])
                     ->toDateTimeString();
                 $end = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $time[1])
                     ->toDateTimeString();
-
                 $start_hour = explode(" ", $start);
                 $end_hour = explode(" ", $end);
-
                 $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
-
                 $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
                 $duration = $diff_sec / 3600;
-
                 // store
                 if ($diff_day == 0) {
-
                     if ($duration > 4) {
                         $duration = 8;
                         $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
-
                         $booking = Booking::create([
                             'room_id' => $roomId,
                             'booked_by' => Auth::user()->id,
@@ -106,23 +78,15 @@ class ApiWooCommerce extends Controller
                             'location' => 'Eur',
                             'price' => $price[0]->price
                         ]);
-
                         $controller = Bookingsupport::where('ip','=',$ip)
                             ->where('mac_address','=', $mac_address)
                             ->delete();
-
-
-
                         return Redirect::to('http://142.93.49.84/mio-account/')->with('message', 'Complimenti!'); //is this actually OK
-
-                       /* return response()->json([
-                            'message' => __('Room :name is successfully booked!', ['name' => $roomName])
-                        ]); */
-
-
+                        /* return response()->json([
+                             'message' => __('Room :name is successfully booked!', ['name' => $roomName])
+                         ]); */
                     } else {
                         $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
-
                         $booking = Booking::create([
                             'room_id' => $roomId,
                             'booked_by' => Auth::user()->id,
@@ -133,28 +97,19 @@ class ApiWooCommerce extends Controller
                             'location' => 'Eur',
                             'price' => $price[0]->price
                         ]);
-
                         $controller = Bookingsupport::where('ip','=',$ip)
                             ->where('mac_address','=', $mac_address)
                             ->delete();
-
                         return Redirect::to('http://142.93.49.84/mio-account/')->with('message', 'Complimenti!'); //is this actually OK
-
-                    /*  return response()->json([
-                            'message' => __('Room :name is successfully booked!', $roomName)
-                        ]); */
+                        /*  return response()->json([
+                                'message' => __('Room :name is successfully booked!', $roomName)
+                            ]); */
                     }
-
                 } else {
                     $diff_day = $diff_day + 1;
-
                     $duration = 8;
-
                     $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
-
                     $price_final = ($price[0]->price) * $diff_day;
-
-
                     $booking = Booking::create([
                         'room_id' => $roomId,
                         'booked_by' => Auth::user()->id,
@@ -165,31 +120,21 @@ class ApiWooCommerce extends Controller
                         'location' => 'Eur',
                         'price' => $price_final
                     ]);
-
                     $controller = Bookingsupport::where('ip','=',$ip)
                         ->where('mac_address','=', $mac_address)
                         ->delete();
-
                     return Redirect::to('http://142.93.49.84/mio-account/')->with('message', 'Complimenti!'); //is this actually OK
-
-                  /*  return response()->json([
-                        'message' => __('Room :name is successfully booked!', ['name' => $roomName])
-                    ]); */
+                    /*  return response()->json([
+                          'message' => __('Room :name is successfully booked!', ['name' => $roomName])
+                      ]); */
                 }
-
                 $duration = $diff_sec / 3600;
-
                 if ($duration > 5) {
-
                     $duration = 8;
-
                     $price = DB::table('prices')->where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
-
                 } else {
-
                     $price = DB::table('prices')->where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
                 }
-
                 Booking::create([
                     'room_id' => $data['roomId'],
                     'booked_by' => Auth::user()->id,
@@ -200,8 +145,6 @@ class ApiWooCommerce extends Controller
                     'location' => $room->location,
                     'price' => $price[0]->price
                 ]);
-
-
             }
         }
     }
@@ -263,11 +206,12 @@ class ApiWooCommerce extends Controller
     // e spostato nella tabella booking
     public function booking_lastUser($string)
     {
+
         $email = base64_decode($string);
         $user = DB::table('users')->where('email', '=', $email)->get();
 		
-		// return $user;
-		
+        //return $user;
+
         $user_id = $user[0]->id;
         $userName = $user[0]->name;
 
@@ -284,13 +228,13 @@ class ApiWooCommerce extends Controller
 
         $response = $this->controller($ip,$mac_address);
 
+
         $roomId = $response[0]['roomId'];
         $roomName = $response[0]['roomName'];
-
-   //     return $roomId. ' - ' . $roomName;
-
-
         $bookingTime = $response[0]['bookingTime'];
+        $price = $response[0]['price_room'];
+
+
 
        // return $bookingTime;
 
@@ -309,11 +253,19 @@ class ApiWooCommerce extends Controller
         $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
         $duration = $diff_sec / 3600;
 
+      //  return $duration;
+
         if ($diff_day == 0) {
 
             if ($duration > 4) {
-                $duration = 8;
-                $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
+
+                if($price==null){
+
+                    $prezzo = Price::where('duration', '=', 8)->where('price_id', '=', $roomId)->get();
+                    $price = $prezzo[0]->price;
+                }
+
+                $price_def = $price + $response[0]['tot_optional'];
 
                 $booking = Booking::create([
                     'room_id' => $roomId,
@@ -323,7 +275,37 @@ class ApiWooCommerce extends Controller
                     'end_date' => $end,
                     'location_id' => 1,
                     'location' => 'Eur',
-                    'price' => $price[0]->price
+                    'price' => $price,
+                    'price_tot_optional' => $response[0]['tot_optional'],
+                    'total_price' => $price_def,
+                ]);
+
+                $optional = BookingOptional::create([
+                    'booking_id' => $booking->id,
+                    'roomId'=>$roomId,
+                    'roomName' => $roomName,
+                    'tot_optional' => $response[0]['tot_optional'],
+                    'coffee_break' => $response[0]['coffee_break'],
+                    'quick_lunch'  => $response[0]['quick_lunch'],
+                    'videoproiettore' => $response[0]['videoproiettore'],
+                    'permanent_coffee' => $response[0]['permanent_coffee'],
+                    'wifi' => $response[0]['wifi'],
+                    'videoconferenza' => $response[0]['videoconferenza'],
+                    'webconference' => $response[0]['webconference'],
+                    'lavagna_foglimobili' =>    $response[0]['lavagna_foglimobili'],
+                    'stampante' => $response[0]['stampante'],
+                    'permanent_coffeeplus' => $response[0]['permanent_coffeeplus'],
+                    'connessione_viacavo' => $response[0]['connessione_viacavo'],
+                    'integrazione_permanentcoffee' => $response[0]['integrazione_permanentcoffee'],
+                    'upgrade_banda10mb' => $response[0]['upgrade_banda10mb'],
+                    'upgrade_banda8mb' => $response[0]['upgrade_banda8mb'],
+                    'upgrade_banda20mb' => $response[0]['upgrade_banda20mb'],
+                    'wirless_4mb20accessi' => $response[0]['wirless_4mb20accessi'],
+                    'wirless_8mb35accessi' => $response[0]['wirless_8mb35accessi'],
+                    'wirless_10mb50accessi' => $response[0]['wirless_10mb50accessi'],
+                    'videoregistrazione' => $response[0]['videoregistrazione'],
+                    'fattorino' => $response[0]['fattorino'],
+                    'lavagna_interattiva' => $response[0]['lavagna_interattiva']
                 ]);
 
                 $controller = Bookingsupport::where('ip','=',$ip)
@@ -336,7 +318,6 @@ class ApiWooCommerce extends Controller
                 // dati necessari da ricavare sul db di woocommerce
                 // ed inserire l'ordine nel carrello
 
-               // return 'ciao';
                 $wp_users = $db->table('wp_users')->where('user_email','=',$email)->get();
 
                 $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
@@ -345,9 +326,6 @@ class ApiWooCommerce extends Controller
                 $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
 
                 $id_wp_user = $wp_users[0]->ID;
-
-               // return $id_wp_user;
-
 
                 $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->get();
 
@@ -372,11 +350,11 @@ class ApiWooCommerce extends Controller
                 $this->woo_insert_post($db,$id_wp_posts,$id_wp_user);
 
 
-                $this->woo_insert_postmeta($db,$id_wp_posts,$id_wp_user,$ip,$agent,$price[0]->price,$first_name,$last_name,$address_1);
+                $this->woo_insert_postmeta($db,$id_wp_posts,$id_wp_user,$ip,$agent,$price_def,$first_name,$last_name,$address_1);
 
                 $this->insert_woocommerce_order_items($db,$id_order_item,$id_wp_posts,$roomName,$start,$end);
 
-                $this->insert_woocommerce_order_itemmeta($db,$price[0]->price);
+                $this->insert_woocommerce_order_itemmeta($db,$price_def);
 
 
                 // END
@@ -389,7 +367,17 @@ class ApiWooCommerce extends Controller
                  ]); */
 
             } else {
-                $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
+
+                if($price==null){
+
+                    $prezzo = Price::where('duration', '=', 8)->where('price_id', '=', $roomId)->get();
+                    $price = $prezzo[0]->price;
+                }
+
+
+                $price_def = $price + $response[0]['tot_optional'];
+
+              //  return $price_def;
 
                 $booking = Booking::create([
                     'room_id' => $roomId,
@@ -399,8 +387,87 @@ class ApiWooCommerce extends Controller
                     'end_date' => $end,
                     'location_id' => 1,
                     'location' => 'Eur',
-                    'price' => $price[0]->price
+                    'price' => $price,
+                    'price_tot_optional' => $response[0]['tot_optional'],
+                    'total_price' => $price_def,
                 ]);
+
+
+                $optional = BookingOptional::create([
+                    'booking_id' => $booking->id,
+                    'roomId'=>$roomId,
+                    'roomName' => $roomName,
+                    'tot_optional' => $response[0]['tot_optional'],
+                    'coffee_break' => $response[0]['coffee_break'],
+                    'quick_lunch'  => $response[0]['quick_lunch'],
+                    'videoproiettore' => $response[0]['videoproiettore'],
+                    'permanent_coffee' => $response[0]['permanent_coffee'],
+                    'wifi' => $response[0]['wifi'],
+                    'videoconferenza' => $response[0]['videoconferenza'],
+                    'webconference' => $response[0]['webconference'],
+                    'lavagna_foglimobili' =>    $response[0]['lavagna_foglimobili'],
+                    'stampante' => $response[0]['stampante'],
+                    'permanent_coffeeplus' => $response[0]['permanent_coffeeplus'],
+                    'connessione_viacavo' => $response[0]['connessione_viacavo'],
+                    'integrazione_permanentcoffee' => $response[0]['integrazione_permanentcoffee'],
+                    'upgrade_banda10mb' => $response[0]['upgrade_banda10mb'],
+                    'upgrade_banda8mb' => $response[0]['upgrade_banda8mb'],
+                    'upgrade_banda20mb' => $response[0]['upgrade_banda20mb'],
+                    'wirless_4mb20accessi' => $response[0]['wirless_4mb20accessi'],
+                    'wirless_8mb35accessi' => $response[0]['wirless_8mb35accessi'],
+                    'wirless_10mb50accessi' => $response[0]['wirless_10mb50accessi'],
+                    'videoregistrazione' => $response[0]['videoregistrazione'],
+                    'fattorino' => $response[0]['fattorino'],
+                    'lavagna_interattiva' => $response[0]['lavagna_interattiva']
+                ]);
+
+                // START insert order in woocommerce
+
+                // dati necessari da ricavare sul db di woocommerce
+                // ed inserire l'ordine nel carrello
+
+                $wp_users = $db->table('wp_users')->where('user_email','=',$email)->get();
+
+                $wp_posts = $db->table('wp_posts')->orderBy('id','DESC')->get();
+
+
+                $wp_woocommerce_order_items = $db->table('wp_woocommerce_order_items')->orderBy('order_item_id','DESC')->get();
+
+                $id_wp_user = $wp_users[0]->ID;
+
+                $billing_first_name = $db->table('wp_usermeta')->where('user_id','=',$id_wp_user)->get();
+
+                $first_name = $billing_first_name[0]->meta_value;
+
+                $last_name = $billing_first_name[1]->meta_value;
+
+                $address_1 = $billing_first_name[2]->meta_value;
+
+
+                $id_wp_posts = $wp_posts[0]->ID+1;
+
+
+                $id_order_item = $wp_woocommerce_order_items[0]->order_item_id;
+
+
+                $ip = request()->ip();
+
+                $agent= request()->header('User-Agent');
+
+
+                $this->woo_insert_post($db,$id_wp_posts,$id_wp_user);
+
+
+                $this->woo_insert_postmeta($db,$id_wp_posts,$id_wp_user,$ip,$agent,$price_def,$first_name,$last_name,$address_1);
+
+                $this->insert_woocommerce_order_items($db,$id_order_item,$id_wp_posts,$roomName,$start,$end);
+
+                $this->insert_woocommerce_order_itemmeta($db,$price_def);
+
+
+                // END
+
+
 
                 $controller = Bookingsupport::where('ip','=',$ip)
                     ->where('mac_address','=', $mac_address)
@@ -420,7 +487,9 @@ class ApiWooCommerce extends Controller
 
             $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
 
-            $price_final = ($price[0]->price) * $diff_day;
+            $price_def = $price[0]->price + $response[0]['tot_optional'];
+
+            $price_final = ($price_def) * $diff_day;
 
 
             $booking = Booking::create([
@@ -431,7 +500,37 @@ class ApiWooCommerce extends Controller
                 'end_date' => $end,
                 'location_id' => 1,
                 'location' => 'Eur',
-                'price' => $price_final
+                'price' => $price[0]->price,
+                'price_tot_optional' => $response[0]['tot_optional'],
+                'total_price' => $price_def
+            ]);
+
+            $optional = BookingOptional::create([
+                'id' => $booking->id,
+                'roomId'=>$roomId,
+                'roomName' => $roomName,
+                'tot_optional' => $response[0]['tot_optional'],
+                'coffee_break' => $response[0]['coffee_break'],
+                'quick_lunch'  => $response[0]['quick_lunch'],
+                'videoproiettore' => $response[0]['videoproiettore'],
+                'permanent_coffee' => $response[0]['permanent_coffee'],
+                'wifi' => $response[0]['wifi'],
+                'videoconferenza' => $response[0]['videoconferenza'],
+                'webconference' => $response[0]['webconference'],
+                'lavagna_foglimobili' =>    $response[0]['lavagna_foglimobili'],
+                'stampante' => $response[0]['stampante'],
+                'permanent_coffeeplus' => $response[0]['permanent_coffeeplus'],
+                'connessione_viacavo' => $response[0]['connessione_viacavo'],
+                'integrazione_permanentcoffee' => $response[0]['integrazione_permanentcoffee'],
+                'upgrade_banda10mb' => $response[0]['upgrade_banda10mb'],
+                'upgrade_banda8mb' => $response[0]['upgrade_banda8mb'],
+                'upgrade_banda20mb' => $response[0]['upgrade_banda20mb'],
+                'wirless_4mb20accessi' => $response[0]['wirless_4mb20accessi'],
+                'wirless_8mb35accessi' => $response[0]['wirless_8mb35accessi'],
+                'wirless_10mb50accessi' => $response[0]['wirless_10mb50accessi'],
+                'videoregistrazione' => $response[0]['videoregistrazione'],
+                'fattorino' => $response[0]['fattorino'],
+                'lavagna_interattiva' => $response[0]['lavagna_interattiva']
             ]);
 
             $controller = Bookingsupport::where('ip','=',$ip)
@@ -439,10 +538,6 @@ class ApiWooCommerce extends Controller
                 ->delete();
 
             return Redirect::to('http://142.93.49.84/mio-account/')->with('message', 'Complimenti!'); //is this actually OK
-
-            /*  return response()->json([
-                  'message' => __('Room :name is successfully booked!', ['name' => $roomName])
-              ]); */
         }
 
         $duration = $diff_sec / 3600;
@@ -588,6 +683,7 @@ class ApiWooCommerce extends Controller
 
         $order_item_id = $order_item_id+1;
 
+
         $db->table('wp_woocommerce_order_items')->insert([
             ['order_item_name'=>$roomName.' dal '. $start . ' al ' . $end,   'order_item_type' => 'line_item',   'order_id'=>$order_id],
             ['order_item_name'=>'Spedizione gratuita',   'order_item_type' => 'shipping',   'order_id'=>$order_id],
@@ -611,7 +707,7 @@ class ApiWooCommerce extends Controller
             ['order_item_id' => $order_item_id, 'meta_key'=>'_variation_id','meta_value' => ''],
             ['order_item_id' => $order_item_id, 'meta_key'=>'_qty','meta_value' => ''],
             ['order_item_id' => $order_item_id, 'meta_key'=>'_tax_class','meta_value' => ''],
-            ['order_item_id' => $order_item_id, 'meta_key'=>'_line_subtotal','meta_value' => '80'],
+            ['order_item_id' => $order_item_id, 'meta_key'=>'_line_subtotal','meta_value' => $price],
             ['order_item_id' => $order_item_id, 'meta_key'=>'_line_subtotal_tax','meta_value' => '0'],
             ['order_item_id' => $order_item_id, 'meta_key'=>'_line_total','meta_value' => $price],
             ['order_item_id' => $order_item_id, 'meta_key'=>'_line_tax','meta_value' => '0'],

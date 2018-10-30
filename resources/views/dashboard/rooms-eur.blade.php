@@ -13,7 +13,7 @@
             background-color: #ffffff;
         }
     </style>
-    <title>Booking Calendar</title>
+    <title>Booking Calendar Eur</title>
 
 @endpush
 
@@ -21,7 +21,7 @@
     <ol class="breadcrumb">
         <li class="active"><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> {{ __('Home') }}</a></li>
         <li><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
-        <li class="active">{{ __('Booking Calendar') }}</li>
+        <li class="active">{{ __('Booking Calendar Eur') }}</li>
     </ol>
 @endsection
 
@@ -67,22 +67,6 @@
                 resources: '{!! route('fullcalendar.roomeur') !!}',
                 events: '{!! route('fullcalendar.bookingeur') !!}',
                 timeFormat: 'H(:mm)'
-                /*  events: [
-                      {
-                          id: "1",
-                          resourceId: "1",
-                          start: "2018-06-27 09:00:00",
-                          end: "2018-06-27 12:00:00",
-                          title: "Sia",
-                      },
-                      {
-                          id: "2",
-                          resourceId: "1",
-                          start: "2018-06-27 15:00:00",
-                          end: "2018-06-27 19:00:00",
-                          title: "Cruciani",
-                      }
-                  ]*/
             });
         });
 

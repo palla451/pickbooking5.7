@@ -30,28 +30,7 @@ class FullcalendarController extends Controller
         });
     }
 
-    public static function getBookingAll()
-    {
-     /*   $booking = Booking::orderBy('start_date')
-            ->get([
-                'id',
-                'room_id',
-                'booked_name',
-                'start_date',
-                'end_date',
-            ]);
-
-
-        return $booking->map(function($event) {
-            $booking['id'] = (string)$event->room_id;
-            $booking['resourceId'] = (string)$event->room_id;
-            $booking['start'] = (string)$event->start_date->toDateTimeString();
-            $booking['end'] = (string)$event->end_date->toDateTimeString();
-            $booking['title'] = (string)$event->booked_name;
-            return $booking;
-        });
-    */
-
+    public static function getBookingAll() {
         $booking = DB::table('bookings')
             ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
             ->get([
@@ -80,10 +59,6 @@ class FullcalendarController extends Controller
             $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
-
-
-
-
     }
 
 
@@ -209,21 +184,6 @@ class FullcalendarController extends Controller
             ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
                 ->where('bookings.id','=',$id)
                     ->get();
-
-    //    return $booking;
-
-      //  $booked_name = $booking[0]->booked_name;
-
-     //   $room = Room::where('location_id','=','1')->get();
-
-        /*
-         * return $room->map(function($event) {
-            $room['id'] = (string)$event->id;
-            $room['title'] = (string)$event->name;
-            $room['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
-            return $room;
-        });
-        */
 
         return $booking->map(function($event) {
             $booking['id'] = (string)$event->id;

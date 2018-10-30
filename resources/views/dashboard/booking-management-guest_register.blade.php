@@ -171,6 +171,11 @@
                                      </tr>
                                      </tfoot>
                                 </table>
+                                <p>
+                                    <table>
+                                        @include('optionals.form')
+                                    </table>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -182,7 +187,7 @@
 
 
     <!-- Modal form to add a post -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+   <!-- <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -350,7 +355,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 
@@ -366,83 +371,39 @@
     <script src="{{ url('/') }}/plugins/daterangepicker/moment.min.js"></script>
     <script src="{{ url('/') }}/plugins/daterangepicker/daterangepicker.js"></script>
     <script>
-        $(document).ajaxStart(function() { Pace.restart(); });
-        $('#result').hide(); // hide booking search result table
+    $(document).ajaxStart(function() { Pace.restart(); });
+    $('#result').hide(); // hide booking search result table
 
+    $(document).ready(function () {
 
-        // modal Optional
-        $(document).on('click', '.add-modal', function() {
-            $('.modal-title').text('Add');
-            $('#addModal').modal('show')
-        });
-
-        $('.modal-footer').on('click', '.add', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'bookingoptionaltoken/optionalAjax',
-                data: {
-                    '_token': $('input[name=_token]').val(),
-                    'coffee_break': $('#coffee_break').val(),
-                    'quick_lunch': $('#quick_lunch').val(),
-                    'videoproiettore': $('#videoproiettore').val(),
-                    'permanent_coffee': $('#permanent_coffee').val(),
-                    'wifi': $('#wifi').val(),
-                    'videoconferenza': $('#videoconferenza').val(),
-                    'webconference': $('#webconference').val(),
-                    'lavagna_foglimobili': $('#lavagna_foglimobili').val(),
-                    'stampante': $('#stampante').val(),
-                    'permanent_coffeeplus': $('#permanent_coffeeplus').val(),
-                    'connessione_viacavo': $('#connessione_viacavo').val(),
-                    'integrazione_permanentcoffee': $('#integrazione_permanentcoffee').val(),
-                    'upgrade_banda10mb': $('#upgrade_banda10mb').val(),
-                    'upgrade_banda8mb': $('#upgrade_banda8mb').val(),
-                    'upgrade_banda20mb': $('#upgrade_banda20mb').val(),
-                    'wirless_4mb20accessi': $('#wirless_4mb20accessi').val(),
-                    'wirless_8mb35accessi': $('#wirless_8mb35accessi').val(),
-                    'wirless_10mb50accessi': $('#wirless_10mb50accessi').val(),
-                    'videoregistrazione': $('#videoregistrazione').val(),
-                    'fattorino': $('#fattorino').val(),
-                    'lavagna_interattiva': $('#lavagna_interattiva').val(),
-
-                },
-                success: function (data) {
-                    console.log(data);
-                }
-            })
-        });
-
-
-
-        $(document).ready(function () {
-
-            $('#bookingList').DataTable({
-                initComplete: function(){
-                    var api = this.api();
-                    $('#bookingList_filter input')
+        $('#bookingList').DataTable({
+            initComplete: function(){
+                var api = this.api();
+                $('#bookingList_filter input')
                         .off('.DT')
                         .on('keyup.DT', function (e) {
                             if (e.keyCode === 13) {
                                 api.search(this.value).draw();
                             }
                         });
-                },
-                processing: true,
-                serverSide: true,
-                ajax: "{!! route('datatables.bookings') !!}",
-                lengthMenu: [[5,20,50,100,-1], [5,20,50,100,"All"]],
-                columns: [
-                    { data: 'room_name', name: 'room_name' },
-                    { data: 'booked_by', name: 'booked_by' },
-                    { data: 'start_date', name: 'start_date' },
-                    { data: 'end_date', name: 'end_date' },
-                    { data: 'duration', name: 'duration'},
-                    { data: 'status', name: 'status'},
-                    { data: 'action', name: 'action', orderable: false, searchable: false}
-                ]
-            });
+            },
+            processing: true,
+            serverSide: true,
+            ajax: "{!! route('datatables.bookings') !!}",
+            lengthMenu: [[5,20,50,100,-1], [5,20,50,100,"All"]],
+            columns: [
+                { data: 'room_name', name: 'room_name' },
+                { data: 'booked_by', name: 'booked_by' },
+                { data: 'start_date', name: 'start_date' },
+                { data: 'end_date', name: 'end_date' },
+                { data: 'duration', name: 'duration'},
+                { data: 'status', name: 'status'},
+                { data: 'action', name: 'action', orderable: false, searchable: false}
+            ]
+        });
 
-            // Cancel booking
-            $('#bookingList')
+        // Cancel booking
+        $('#bookingList')
                 .DataTable()
                 .on('click', '.btn-delete', function (event) {
                     event.preventDefault();
@@ -467,137 +428,261 @@
                             data: {'_method' : 'DELETE', '_token' : token},
                             dataType: 'json'
                         })
-                        .done(function(data){
-                            swal({
-                                title: '{{ __('Cancelled!') }}',
-                                text: data.message,
-                                type: 'success',
-                                confirmButtonText: '{!! __('Close') !!}',
-                                allowOutsideClick: false
-                            }).then(function(){
-                                $('#bookingList').DataTable().ajax.reload();
-                            });
-                        })
-                        .fail(function(data){
-                            var errors = data.responseJSON;
-                            if (data.status === 403) {
-                                swal({
-                                    title: '{{ __('Request denied!') }}',
-                                    text: errors.message,
-                                    type: 'error',
-                                    confirmButtonText: '{!! __('Close') !!}',
-                                    allowOutsideClick: false
+                                .done(function(data){
+                                    swal({
+                                        title: '{{ __('Cancelled!') }}',
+                                        text: data.message,
+                                        type: 'success',
+                                        confirmButtonText: '{!! __('Close') !!}',
+                                        allowOutsideClick: false
+                                    }).then(function(){
+                                        $('#bookingList').DataTable().ajax.reload();
+                                    });
+                                })
+                                .fail(function(data){
+                                    var errors = data.responseJSON;
+                                    if (data.status === 403) {
+                                        swal({
+                                            title: '{{ __('Request denied!') }}',
+                                            text: errors.message,
+                                            type: 'error',
+                                            confirmButtonText: '{!! __('Close') !!}',
+                                            allowOutsideClick: false
+                                        });
+                                    } else {
+                                        $.each(errors.errors, function (key, value) {
+                                            toastr.error(value);
+                                        });
+                                    }
                                 });
+                    });
+                });
+
+        // Date range picker with time picker
+        /*    $('#bookingTime').daterangepicker({
+         //  singleDatePicker: true,
+         timePicker: true,
+         timePickerIncrement: 30,
+         timePicker24Hour: true,
+         minDate: moment().format('DD/MM/YYYY HH'),
+         opens: 'right',
+         locale: {
+         format: 'DD/MM/YYYY HH:mm:ss'
+         }
+         }); */
+
+        // Date range picker with time picker
+        $('#bookingTimeUno').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 30,
+            timePicker24Hour: true,
+            minDate: moment().format('DD/MM/YYYY HH'),
+            opens: 'right',
+            locale: {
+                format: 'DD/MM/YYYY HH:mm:ss'
+            }
+        });
+
+        $('#bookingTimeDue').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 30,
+            timePicker24Hour: true,
+            minDate: moment().format('DD/MM/YYYY HH'),
+            opens: 'right',
+            locale: {
+                format: 'DD/MM/YYYY HH:mm:ss'
+            }
+        });
+
+        $('#search').on('submit', function (event) {
+            event.preventDefault();
+            var data = $(this).serialize();
+
+            //   var bookingTime = document.getElementById('bookingTime').value;
+            var bookingTimeUno = document.getElementById('bookingTimeUno').value;
+            var bookingTimeDue = document.getElementById('bookingTimeDue').value;
+            var bookingTime = bookingTimeUno + ' - ' + bookingTimeDue;
+            //   console.log(bookingTime);
+            console.log(bookingTime);
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('bookings.search') }}",
+                data: data,
+                dataType: 'json'
+            })
+                    .done(function(result){
+                        $('#searchResult').DataTable().destroy();
+                        $('#webconference').prop("checked",false);
+                        $('#videoproiettore').prop("checked",false);
+                        $('#videoregistrazione').prop("checked",false);
+                        $('#lavagna_interattiva').prop("checked",false);
+                        $('#videoconferenza').prop("checked",false);
+                        $('#result').show();
+                        $('#searchResult').DataTable({
+                            data: result,
+                            columns: [
+                                { data: 'name' },
+                                { data: 'pax', width: '100px', orderable: false, searchable: false},
+                                { data: 'location', width: '100px', orderable: false, searchable: false},
+                                { data: 'type', width: '100px', orderable: false, searchable: false},
+                                { data: 'price', width: '100px', orderable: false, searchable: false},
+                                { data: 'action', width: '100px', orderable: false, searchable: false}
+                            ]
+                        }).on('click', '.btn-book', function(event){
+                            event.preventDefault();
+
+                            // START optionals
+                            var coffee_break = $('#coffee_break').val()*6.5;
+                            var quick_lunch = $('#quick_lunch').val()*1;
+                            var permanent_coffee = $('#permanent_coffee').val()*7;
+                            var wifi = $('#wifi').val()*50;
+                            var lavagna_foglimobili = $('#lavagna_foglimobili').val()*1;
+                            var stampante = $('#stampante').val()*1;
+                            var permanent_coffeeplus = $('#permanent_coffeeplus').val()*1;
+                            var connessione_viacavo = $('#connessione_viacavo').val()*1;
+                            var integrazione_permanentcoffee = $('#integrazione_permanentcoffee').val()*1;
+                            var upgrade_banda10mb = $('#upgrade_banda10mb').val()*1;
+                            var upgrade_banda8mb = $('#upgrade_banda8mb').val()*1;
+                            var upgrade_banda20mb = $('#upgrade_banda20mb').val()*1;
+                            var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
+                            var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
+                            var wirless_10mb50accessi = $('#wirless_10mb50accessi').val()*1;
+                            var fattorino = $('#fattorino').val()*1;
+
+                            // START checkbox
+                            if ($('#lavagna_interattiva').is(':checked')){
+                                var lavagna_interattiva = 75;
+                                //console.log(lavagna_interattiva);
                             } else {
-                                $.each(errors.errors, function (key, value) {
-                                    toastr.error(value);
-                                });
+                                var lavagna_interattiva = 0;
+                                // console.log(lavagna_interattiva);
                             }
+
+                            if ($('#videoproiettore').is(':checked')){
+                                var videoproiettore = 55;
+                                //    console.log(videoproiettore);
+                            } else {
+                                var videoproiettore = 0;
+                                //    console.log(videoproiettore);
+                            }
+
+                            if ($('#videoconferenza').is(':checked')){
+                                var videoconferenza = 45;
+                                //    console.log(videoconferenza);
+                            } else {
+                                var videoconferenza = 0;
+                                // console.log(videoconferenza);
+                            }
+
+                            if ($('#webconference').is(':checked')){
+                                var webconference = 35;
+                                // console.log(webconference);
+                            } else {
+                                var webconference = 0;
+                                // console.log(webconference);
+                            }
+
+                            if ($('#videoregistrazione').is(':checked')){
+                                var videoregistrazione = 25;
+                                // console.log(videoregistrazione);
+                            } else {
+                                var videoregistrazione = 0;
+                                // console.log(videoregistrazione);
+                            }
+                            //END checkbox
+
+                            var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
+
+                            // END optionals
+
+                            var roomName = $(this).data('name');
+                            var roomId = $(this).data('id');
+                            var url = $(this).data('remote');
+                            var token = $('meta[name="csrf-token"]').attr('content');
+                            var clickedRow = $('#searchResult')
+                                    .DataTable()
+                                    .row($(this).parents('tr'));
+
+                            swal({
+                                title: roomName,
+                                text: "{!! __("Are you sure to book this room?") !!}",
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#ccc',
+                                confirmButtonText: "{!! __("Yes, book it!") !!}",
+                                cancelButtonText: '{!! __('Cancel') !!}',
+                                allowOutsideClick: false
+                            })
+                                    .then(function(){
+                                        var input = {
+                                            '_token' : token,
+                                            'roomId' : roomId,
+                                            'roomName' : roomName,
+                                            'bookingTime': bookingTime,
+                                            'coffee_break' : coffee_break,
+                                            'quick_lunch' : quick_lunch,
+                                            'videoproiettore': videoproiettore,
+                                            'permanent_coffee': permanent_coffee,
+                                            'wifi': wifi,
+                                            'videoconferenza': videoconferenza,
+                                            'webconference': webconference,
+                                            'lavagna_foglimobili': lavagna_foglimobili,
+                                            'stampante': stampante,
+                                            'permanent_coffeeplus': permanent_coffeeplus,
+                                            'connessione_viacavo': connessione_viacavo,
+                                            'integrazione_permanentcoffee': integrazione_permanentcoffee,
+                                            'upgrade_banda10mb': upgrade_banda10mb,
+                                            'upgrade_banda8mb': upgrade_banda8mb,
+                                            'upgrade_banda20mb': upgrade_banda20mb,
+                                            'wirless_4mb20accessi': wirless_4mb20accessi,
+                                            'wirless_8mb35accessi': wirless_8mb35accessi,
+                                            'wirless_10mb50accessi': wirless_10mb50accessi,
+                                            'videoregistrazione': videoregistrazione,
+                                            'fattorino': fattorino,
+                                            'lavagna_interattiva': lavagna_interattiva,
+                                            'tot_optional' : tot_optional
+                                        };
+                                        console.log(input);
+                                        $.ajax({
+                                            type: "post",
+                                            url: url,
+                                            data: input,
+                                            dataType: 'json'
+                                        })
+                                                .done(function(data){
+                                                    swal({
+                                                        title: '{{ __('Booked!') }}',
+                                                        text: data.message,
+                                                        type: 'success',
+                                                        allowOutsideClick: false
+                                                    }).then(function(){
+                                                        clickedRow.remove().draw();
+                                                        $('#bookingList').DataTable().ajax.reload();
+                                                    });
+                                                })
+                                                .fail(function(data){
+                                                    var errors = data.responseJSON;
+                                                    $.each(errors.errors, function (key, value) {
+                                                        toastr.error(value);
+                                                    });
+                                                });
+                                    });
+                        });
+                    })
+                    .fail(function(data){
+                        $('#result').hide();
+
+                        var errors = data.responseJSON;
+                        $.each(errors.errors, function (key, value) {
+                            toastr.error(value);
                         });
                     });
-                });
-
-            // Date range picker with time picker
-            $('#bookingTime').daterangepicker({
-                timePicker: true,
-                timePickerIncrement: 15,
-                timePicker24Hour: true,
-                minDate: moment().format('DD/MM/YYYY HH'),
-                opens: 'right',
-                locale: {
-                    format: 'DD/MM/YYYY HH:mm:ss'
-                }
-            });
-
-            $('#search').on('submit', function (event) {
-                event.preventDefault();
-                var data = $(this).serialize();
-                var bookingTime = document.getElementById('bookingTime').value;
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('bookings.search') }}",
-                    data: data,
-                    dataType: 'json'
-                })
-                .done(function(result){
-                    $('#searchResult').DataTable().destroy();
-                    $('#result').show();
-                    $('#searchResult').DataTable({
-                        data: result,
-                        columns: [
-                            { data: 'name' },
-                            { data: 'pax', width: '100px', orderable: false, searchable: false},
-                            { data: 'location', width: '100px', orderable: false, searchable: false},
-                            { data: 'type', width: '100px', orderable: false, searchable: false},
-                            { data: 'price', width: '100px', orderable: false, searchable: false},
-                            { data: 'action', width: '100px', orderable: false, searchable: false}
-                        ]
-                    }).on('click', '.btn-book', function(event){
-                        event.preventDefault();
-
-                        var roomName = $(this).data('name');
-                        var roomId = $(this).data('id');
-                        var url = null; //route per prenotazione momentanea per guest user
-                        var token = $('meta[name="csrf-token"]').attr('content');
-                        var clickedRow = $('#searchResult')
-                                            .DataTable()
-                                            .row($(this).parents('tr'));
-
-                        swal({
-                            title: roomName,
-                            text: "{!! __("Are you sure to book this room?") !!}",
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#ccc',
-                            confirmButtonText: "{!! __("Yes, book it!") !!}",
-                            cancelButtonText: '{!! __('Cancel') !!}',
-                            allowOutsideClick: false
-                        })
-                                .then(function(){
-                                    var input = {
-                                        '_token' : token,
-                                        'roomId' : roomId,
-                                        'roomName' : roomName,
-                                        'bookingTime': bookingTime
-                                    };
-                                    $.ajax({
-                                        type: "POST",
-                                        url: url,
-                                        data: input,
-                                        dataType: 'json'
-                                    })
-                                            .done(function(data){
-                                                swal({
-                                                    title: '{{ __('Booked!') }}',
-                                                    text: data.message,
-                                                    type: 'success',
-                                                    allowOutsideClick: false
-                                                }).then(function(){
-                                                    clickedRow.remove().draw();
-                                                    $('#bookingList').DataTable().ajax.reload();
-                                                });
-                                            })
-                                            .fail(function(data){
-                                                var errors = data.responseJSON;
-                                                $.each(errors.errors, function (key, value) {
-                                                    toastr.error(value);
-                                                });
-                                            });
-                                });
-                    });
-                })
-                .fail(function(data){
-                    $('#result').hide();
-
-                    var errors = data.responseJSON;
-                    $.each(errors.errors, function (key, value) {
-                        toastr.error(value);
-                    });
-                });
-            });
-
         });
-    </script>
+
+    });
+</script>
 @endpush

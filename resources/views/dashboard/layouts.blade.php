@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     @yield('csrf-token')
-    <title>{{ config('app.name') }} | {{ $pageTitle or '' }}</title>
+    <title>{{ config('app.name') }} | {{ $pageTitle ?? '' }}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -150,8 +150,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                {{ $pageHeader or '' }}
-                <small>{{ $pageSubHeader or '' }}</small>
+                {{ $pageHeader ?? '' }}
+                <small>{{ $pageSubHeader ?? '' }}</small>
             </h1>
             @yield('breadcrumb')
         </section>

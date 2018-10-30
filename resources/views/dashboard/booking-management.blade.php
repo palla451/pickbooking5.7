@@ -637,9 +637,6 @@
                         }
                         //END checkbox
 
-                        var tot_optional = lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
-
-
                        var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
 
                 // END optionals
@@ -702,7 +699,7 @@
                             .done(function(data){
                                 swal({
                                     title: '{{ __('Booked!') }}',
-                                    text: data.message,
+                                    text: 'Reservation confirmed!',
                                     type: 'success',
                                     allowOutsideClick: false
                                 }).then(function(){

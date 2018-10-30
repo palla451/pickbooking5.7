@@ -121,10 +121,6 @@ class BookingController extends Controller
                     'price_tot_optional' => $data['tot_optional']
                 ]);
 
-             //   return $booking;
-
-
-               // dd($booking->id);
 
                 $optional = BookingOptional::create([
                     'booking_id' => $booking->id,
@@ -565,7 +561,10 @@ class BookingController extends Controller
 
                     $rooms = json_decode($resources,1);
 
+                 //   return $rooms;
+
                     foreach($rooms as $key=> $row){
+                        $rooms[$key]['name'] = $rooms[$key]['name']."&nbsp;&nbsp;<a style='background-color:orange;padding:2px;color:white'>Upgrade!!!</a>";
                         $rooms[$key]['price'] = $price[0]->price;
                         $rooms[$key]['action'] = '<button class="btn btn-xs btn-primary btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
                                                     <span class="glyphicon glyphicon-edit"></span>
@@ -584,6 +583,7 @@ class BookingController extends Controller
 
 
                 }else {
+
                     // Create book button
                     $room = $rooms->each(function ($room) {
                         $bookUrl = route('bookings.store');
@@ -636,6 +636,7 @@ class BookingController extends Controller
                     $rooms = json_decode($resources,1);
 
                     foreach($rooms as $key=> $row){
+                        $rooms[$key]['name'] = $rooms[$key]['name']."&nbsp;&nbsp;<a style='background-color:orange;padding:2px;color:white'>Upgrade!!!</a>";
                         $rooms[$key]['price'] = $price[0]->price;
                         $rooms[$key]['action'] = '<button class="btn btn-xs btn-primary btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
                                                     <span class="glyphicon glyphicon-edit"></span>
