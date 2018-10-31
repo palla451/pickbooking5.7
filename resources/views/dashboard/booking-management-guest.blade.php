@@ -448,7 +448,7 @@
                             var clickedRow = $('#searchResult')
                                     .DataTable()
                                     .row($(this).parents('tr'));
-                            alert(price);
+                          //  alert(price);
                             swal({
                                 title: roomName,
                                 text: "you must be registered to be able to book",
