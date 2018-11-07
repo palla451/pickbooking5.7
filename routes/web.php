@@ -41,6 +41,13 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::resource('/bookings', 'BookingController');
     Route::resource('/users', 'UserController');
 
+
+    Route::get('/booking/resources','ResourceController@bookingresource')->name('rooms.works');
+
+
+    Route::get('/booking/showroom/{id}','ResourceController@showRoom')->name('show-room');
+    Route::post('/booking/showroom','ResourceController@get_booking')->name('bookingshowroom');
+
     Route::get('/booking/all','FullcalendarController@getBookingAll')->name('fullcalendar.bookingall');
     Route::get('/booking/all/eur','FullcalendarController@getBookingEur')->name('fullcalendar.bookingeur');
     Route::get('/booking/all/boezio','FullcalendarController@getBookingBoezio')->name('fullcalendar.bookingboezio');

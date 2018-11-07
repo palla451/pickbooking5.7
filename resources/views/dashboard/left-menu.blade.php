@@ -24,6 +24,13 @@
             </li>
             @endability
             @ability('superadmin|admin', '*-user')
+            <li{{ request()->segment(2) == 'rooms.works' ? ' class=active': '' }}>
+                <a href="{{ route('rooms.works') }}">
+                    <i class="fa fa-exclamation-triangle"></i> <span>{{ __('Room Works') }}</span>
+                </a>
+            </li>
+            @endability
+            @ability('superadmin|admin', '*-user')
             <li{{ request()->segment(2) == 'add_optional' ? ' class=active': '' }}>
                 <a href="{{ route('bookingoptionals.create') }}">
                     <i class="fa fa-plus-square"></i> <span>{{ __('Add New Optional') }}</span>

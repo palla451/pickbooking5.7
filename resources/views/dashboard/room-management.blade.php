@@ -5,10 +5,10 @@
 @endsection
 
 @push('css')
-    <link rel="stylesheet" href="{{ url('/') }}/plugins/pace/pace.min.css">
-    <link rel="stylesheet" href="{{ url('/') }}/toastr/toastr.min.css">
-    <link rel="stylesheet" href="{{ url('/') }}/datatables/datatables.min.css">
-    <link rel="stylesheet" href="{{ url('/') }}/sweetalert2/sweetalert2.min.css">
+<link rel="stylesheet" href="{{ url('/') }}/plugins/pace/pace.min.css">
+<link rel="stylesheet" href="{{ url('/') }}/toastr/toastr.min.css">
+<link rel="stylesheet" href="{{ url('/') }}/datatables/datatables.min.css">
+<link rel="stylesheet" href="{{ url('/') }}/sweetalert2/sweetalert2.min.css">
 @endpush
 
 @section('breadcrumb')
@@ -159,26 +159,23 @@
 @endsection
 
 @push('js')
-    <script src="{{ url('/') }}/plugins/pace/pace.min.js"></script>
-    <script src="{{ url('/') }}/toastr/toastr.min.js"></script>
-    <script src="{{ url('/') }}/toastr/option.js"></script>
-    <script src="{{ url('/') }}/datatables/datatables.min.js"></script>
-    <script src="{{ url('/') }}/sweetalert2/sweetalert2.min.js"></script>
-    <script>
-        $(document).ajaxStart(function() { Pace.restart(); });
-
-        $(document).ready(function () {
-            $('form').on('submit', function(event){
-                event.preventDefault();
-
-                var data = $(this).serialize();
-
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('rooms.store') }}",
-                    data: data,
-                    dataType: 'json'
-                })
+<script src="{{ url('/') }}/plugins/pace/pace.min.js"></script>
+<script src="{{ url('/') }}/toastr/toastr.min.js"></script>
+<script src="{{ url('/') }}/toastr/option.js"></script>
+<script src="{{ url('/') }}/datatables/datatables.min.js"></script>
+<script src="{{ url('/') }}/sweetalert2/sweetalert2.min.js"></script>
+<script>
+    $(document).ajaxStart(function() { Pace.restart(); });
+    $(document).ready(function () {
+        $('form').on('submit', function(event){
+            event.preventDefault();
+            var data = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('rooms.store') }}",
+                data: data,
+                dataType: 'json'
+            })
                     .done(function(data){
                         toastr.success(data.message);
                         $('#addNewRoomForm').each(function(){
@@ -192,40 +189,36 @@
                             toastr.error(value);
                         });
                     });
-            });
-
-            $('#roomlist').DataTable({
-                initComplete: function(){
-                    var api = this.api();
-                    $('#roomlist_filter input')
+        });
+        $('#roomlist').DataTable({
+            initComplete: function(){
+                var api = this.api();
+                $('#roomlist_filter input')
                         .off('.DT')
                         .on('keyup.DT', function (e) {
                             if (e.keyCode === 13) {
                                 api.search(this.value).draw();
                             }
                         });
-                },
-                processing: true,
-                serverSide: true,
-                ajax: "{!! route('datatables.rooms') !!}",
-                lengthMenu: [[5,20,50,100,-1], [5,20,50,100,"All"]],
-                columns: [
-                    { data: 'name', name: 'name' },
-                    { data: 'pax', name: 'pax' },
-                    { data: 'location', name: 'location' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
-            });
-
-            $('#roomlist')
+            },
+            processing: true,
+            serverSide: true,
+            ajax: "{!! route('datatables.rooms') !!}",
+            lengthMenu: [[5,20,50,100,-1], [5,20,50,100,"All"]],
+            columns: [
+                { data: 'name', name: 'name' },
+                { data: 'pax', name: 'pax' },
+                { data: 'location', name: 'location' },
+                { data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+        });
+        $('#roomlist')
                 .DataTable()
                 .on('click', '.btn-delete', function (event) {
                     event.preventDefault();
-
                     var roomName = $(this).data('name');
                     var url = $(this).data('remote');
                     var token = $('meta[name="csrf-token"]').attr('content');
-
                     swal({
                         title: '{{ __ ('Are you sure to delete') }}<br>' + roomName + '?',
                         text: "{!! __("You won't be able to revert this!") !!}",
@@ -243,35 +236,35 @@
                             data: {'_method' : 'DELETE', '_token' : token},
                             dataType: 'json'
                         })
-                            .done(function(data){
-                                swal({
-                                    title: '{{ __('Deleted!') }}',
-                                    text: data.message,
-                                    type: 'success',
-                                    confirmButtonText: '{!! __('Close') !!}',
-                                    allowOutsideClick: false
-                                }).then(function(){
-                                    $('#roomlist').DataTable().ajax.reload();
-                                });
-                            })
-                            .fail(function(data){
-                                var errors = data.responseJSON;
-                                if (data.status === 403) {
+                                .done(function(data){
                                     swal({
-                                        title: '{{ __('Request denied!') }}',
-                                        text: errors.message,
-                                        type: 'error',
+                                        title: '{{ __('Deleted!') }}',
+                                        text: data.message,
+                                        type: 'success',
                                         confirmButtonText: '{!! __('Close') !!}',
                                         allowOutsideClick: false
+                                    }).then(function(){
+                                        $('#roomlist').DataTable().ajax.reload();
                                     });
-                                } else {
-                                    $.each(errors.errors, function (key, value) {
-                                        toastr.error(value);
-                                    });
-                                }
-                            });
+                                })
+                                .fail(function(data){
+                                    var errors = data.responseJSON;
+                                    if (data.status === 403) {
+                                        swal({
+                                            title: '{{ __('Request denied!') }}',
+                                            text: errors.message,
+                                            type: 'error',
+                                            confirmButtonText: '{!! __('Close') !!}',
+                                            allowOutsideClick: false
+                                        });
+                                    } else {
+                                        $.each(errors.errors, function (key, value) {
+                                            toastr.error(value);
+                                        });
+                                    }
+                                });
                     });
                 });
-        })
-    </script>
+    })
+</script>
 @endpush

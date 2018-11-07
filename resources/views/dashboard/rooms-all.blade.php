@@ -66,7 +66,7 @@
                 timeFormat: 'H(:mm)',
 
                 eventMouseover: function(calEvent, jsEvent) {
-                    var tooltip = '<div class="tooltipevent" style="padding-left: 2px;border-radius: 5px 5px 5px 5px;;width:180px;height:120px;background:darkorange;position:absolute;z-index:10001;">' + calEvent.name + '<br />' + calEvent.title
+                    var tooltip = '<div class="tooltipevent" style="padding-left: 2px;border-radius: 5px 5px 5px 5px;;width:180px;height:140px;background:darkorange;position:absolute;z-index:10001;">' + calEvent.name + '<br />' + calEvent.title
                                     +   '<br />Sede ' + calEvent.location
                                     +   '<br /> dal ' + calEvent.start.format('DD-MM-YYYY - HH:mm')
                                     +   '<br /> al ' + calEvent.end.format('DD-MM-YYYY - HH:mm')

@@ -31,7 +31,9 @@ class FullcalendarController extends Controller
     }
 
     public static function getBookingAll() {
+
         $booking = DB::table('bookings')
+            ->where('status','<>','2')
             ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
             ->get([
                 'bookings.id',
@@ -45,8 +47,6 @@ class FullcalendarController extends Controller
             ]);
 
       //   return $booking;
-
-
         return $booking->map(function($event) {
             $booking['id'] = (string)$event->id;
             $booking['resourceId'] = (string)$event->room_id;
@@ -64,66 +64,96 @@ class FullcalendarController extends Controller
 
     public static function getBookingEur()
     {
-        $booking = Booking::orderBy('start_date')
-            ->where('location_id','=','1')
+        $booking = DB::table('bookings')
+            ->where('status','<>','2')
+            ->where('bookings.location_id','=','1')
+            ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
             ->get([
-                'id',
+                'bookings.id',
                 'room_id',
                 'booked_name',
                 'start_date',
                 'end_date',
+                'name',
+                'price',
+                'rooms.location'
             ]);
 
+        //   return $booking;
         return $booking->map(function($event) {
-            $booking['id'] = (string)$event->room_id;
+            $booking['id'] = (string)$event->id;
             $booking['resourceId'] = (string)$event->room_id;
-            $booking['start'] = (string)$event->start_date->toDateTimeString();
-            $booking['end'] = (string)$event->end_date->toDateTimeString();
+            $booking['start'] = (string)$event->start_date;
+            $booking['end'] = (string)$event->end_date;
             $booking['title'] = (string)$event->booked_name;
+            $booking['name'] = (string)$event->name;
+            $booking['location'] = (string)$event->location;
+            $booking['price'] = (string)$event->price;
+            $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
     }
 
     public static function getBookingBoezio()
     {
-        $booking = Booking::orderBy('start_date')
-            ->where('location_id','=','2')
+        $booking = DB::table('bookings')
+            ->where('status','<>','2')
+            ->where('bookings.location_id','=','2')
+            ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
             ->get([
-                'id',
+                'bookings.id',
                 'room_id',
                 'booked_name',
                 'start_date',
                 'end_date',
+                'name',
+                'price',
+                'rooms.location'
             ]);
 
+        //   return $booking;
         return $booking->map(function($event) {
-            $booking['id'] = (string)$event->room_id;
+            $booking['id'] = (string)$event->id;
             $booking['resourceId'] = (string)$event->room_id;
-            $booking['start'] = (string)$event->start_date->toDateTimeString();
-            $booking['end'] = (string)$event->end_date->toDateTimeString();
+            $booking['start'] = (string)$event->start_date;
+            $booking['end'] = (string)$event->end_date;
             $booking['title'] = (string)$event->booked_name;
+            $booking['name'] = (string)$event->name;
+            $booking['location'] = (string)$event->location;
+            $booking['price'] = (string)$event->price;
+            $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
     }
 
     public static function getBookingRegolo()
     {
-        $booking = Booking::orderBy('start_date')
-            ->where('location_id','=','3')
+        $booking = DB::table('bookings')
+            ->where('status','<>','2')
+            ->where('bookings.location_id','=','3')
+            ->join('rooms', 'bookings.room_id', '=', 'rooms.id')
             ->get([
-                'id',
+                'bookings.id',
                 'room_id',
                 'booked_name',
                 'start_date',
                 'end_date',
+                'name',
+                'price',
+                'rooms.location'
             ]);
 
+        //   return $booking;
         return $booking->map(function($event) {
-            $booking['id'] = (string)$event->room_id;
+            $booking['id'] = (string)$event->id;
             $booking['resourceId'] = (string)$event->room_id;
-            $booking['start'] = (string)$event->start_date->toDateTimeString();
-            $booking['end'] = (string)$event->end_date->toDateTimeString();
+            $booking['start'] = (string)$event->start_date;
+            $booking['end'] = (string)$event->end_date;
             $booking['title'] = (string)$event->booked_name;
+            $booking['name'] = (string)$event->name;
+            $booking['location'] = (string)$event->location;
+            $booking['price'] = (string)$event->price;
+            $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
     }
