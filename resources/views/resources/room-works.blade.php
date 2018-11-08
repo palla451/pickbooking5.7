@@ -76,7 +76,7 @@
                                         <td class="locationId">{{$locazione->id}}</td>
                                         <td class="locationName">{{$locazione->sede}}</td>
                                         <td>
-                                            <a href="location/{{$locazione->id}}">
+                                            <a href=showlocation/{{$locazione->id}}">
                                                 <button  type="button" class="btn btn-warning">Work</button>
                                             </a>
                                         </td>

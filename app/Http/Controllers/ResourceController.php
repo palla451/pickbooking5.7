@@ -53,7 +53,20 @@ class ResourceController extends Controller
         return view('resources.resources',compact('room','pageTitle','pageHeader','pagesubHeader'));
     }
 
-    // salva la prenotazione per lavoro
+
+    public function showLocation($id){
+
+        $pageTitle = 'Work in progress';
+        $pageHeader = 'Location booking for work in progress';
+        $pagesubHeader = 'location booking for work in progress';
+
+        $location = Location::where('id','=',$id)->get();
+
+
+        return view('resources.resources_location',compact('location','pageTitle','pageHeader','pagesubHeader'));
+    }
+
+    // salva la prenotazione oer RISORSA per lavoro
     public function get_booking(Request $request){
 
         $bookingTimeUno = $request->bookingTimeUno;
@@ -103,6 +116,66 @@ class ResourceController extends Controller
             $booking->info = 'PICKCENTER: '.$request->areatesto;
 
             $booking->save();
+
+            return redirect('dashboard/calendar/all');
+        }
+    }
+
+    // salva la prenotazione LOCATION per lavoro
+    public function get_bookinglocation(Request $request){
+
+        $bookingTimeUno = $request->bookingTimeUno;
+
+        $bookingTimeDue = $request->bookingTimeDue;
+
+        $location = Location::where('location_id','=',$request->locationId)->get();
+
+
+        $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTimeUno)->toDateTimeString();
+        $end = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTimeDue)->toDateTimeString();
+
+
+
+        if ($bookingTimeUno >= $bookingTimeDue){
+            return imap_alerts();
+        } else {
+
+            $booking_search = Booking::where('location_id','=',$request['locationId'])
+                ->where('start_date','>',$start)->get();
+
+
+            foreach($booking_search as $booking_effettuati){
+                if($booking_effettuati->start_date>=$start && $booking_effettuati->start_date<$end) {
+                    // cancello le prenotazioni presenti nel periodo
+                    $booking_effettuati->status = 2;
+                    $booking_effettuati->update();
+
+                } else {
+
+                }
+            }
+
+            $rooms = Room::where('location_id','=',$request->locationId)->get();
+
+            foreach($rooms as $room){
+                $booking = new Booking();
+
+                $booking->room_id = $room->id;
+                $booking->booked_by = Auth::user()->id;
+                $booking->booked_name = $request->areatesto. ' - ' . User::find(Auth::user()->id)->name;
+                $booking->start_date = $start;
+                $booking->end_date = $end;
+                $booking->location_id = $room->location_id;
+                $booking->location = $request->location;
+                $booking->price = 0;
+                $booking->total_price = 0;
+                $booking->price_tot_optional = 0;
+                $booking->status = 0;
+                $booking->info = 'PICKCENTER: '.$request->areatesto;
+
+                $booking->save();
+            }
+
 
             return redirect('dashboard/calendar/all');
         }

@@ -26,7 +26,7 @@
             @ability('superadmin|admin', '*-user')
             <li{{ request()->segment(2) == 'rooms.works' ? ' class=active': '' }}>
                 <a href="{{ route('rooms.works') }}">
-                    <i class="fa fa-exclamation-triangle"></i> <span>{{ __('Room Works') }}</span>
+                    <i class="fa fa-exclamation-triangle"></i> <span>{{ __('Work in progress') }}</span>
                 </a>
             </li>
             @endability
