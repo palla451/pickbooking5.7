@@ -10,6 +10,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ResourceController extends Controller
 {
@@ -20,7 +21,7 @@ class ResourceController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:create-room|read-room|update-room|delete-room');
+       // $this->middleware('permission:create-room|read-room|update-room|delete-room');
 
         $this->data = [
             'pageTitle' => __('Room Works'),
@@ -40,6 +41,33 @@ class ResourceController extends Controller
         $location = Location::all();
 
         return view('resources.room-works',compact('pageTitle','pageHeader','pageSubHeader','rooms','location'));
+    }
+
+    public function cancellbookingresource(){
+
+        $pageTitle = 'Cancell Work in progress';
+        $pageHeader = 'Cancel booking for work in progress';
+        $pagesubHeader = 'Cancel booking resource for work in progress';
+
+     //   $bookings = Booking::where('info','like','PICKCENTER%')->get();
+
+        $bookings = DB::table('bookings')->where('info','like','PICKCENTER%')
+                    ->join('rooms','bookings.room_id','=','rooms.id')
+                    ->join('locations','bookings.location_id','=','locations.id')
+                        ->get(['bookings.id','bookings.room_id', 'bookings.location_id','locations.sede','bookings.start_date','bookings.end_date','rooms.name']);
+
+       // return $bookings;
+
+        $booking_locations = DB::table('bookings')->where('info','like','PICKCENTER%')
+            ->join('locations','bookings.location_id','=','locations.id')
+            ->get(['bookings.id', 'bookings.location_id','locations.sede','bookings.start_date','bookings.end_date']);
+
+        if($bookings->count()==0){
+            return redirect('/dashboard');
+        } else {
+            return view('resources.cancel-works',compact('pageTitle','pageHeader','pageSubHeader','bookings','booking_locations'));
+        }
+
     }
 
     public function showRoom($id){
@@ -180,5 +208,24 @@ class ResourceController extends Controller
             return redirect('dashboard/calendar/all');
         }
     }
+
+    public function deletebooking($id){
+
+        DB::table('bookings')->where('id',$id)->delete();
+
+        return response()->json(['success' => true],200);
+    }
+
+    public function deletebookinglocation($id){
+
+      //  return $id;
+
+        DB::table('bookings')->where('location_id',$id)
+                ->where('info','like','PICKCENTER%')
+                ->delete();
+
+        return response()->json(['success' => true],200);
+    }
+
 
 }

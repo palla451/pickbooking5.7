@@ -52,7 +52,7 @@
                                         <td class="roomLocation">{{$room->location}}</td>
                                         <td>
                                             <a href="showroom/{{$room->id}}">
-                                                <button  type="button" class="btn btn-warning">Work</button>
+                                                <button type="button" class="btn btn-warning">Work</button>
                                             </a>
                                         </td>
                                     </tr>

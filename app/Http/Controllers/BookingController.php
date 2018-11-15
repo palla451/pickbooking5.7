@@ -516,7 +516,6 @@ class BookingController extends Controller
         $start_hour = explode(" ", $start);
         $end_hour = explode(" ", $end);
 
-        $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
 
         $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
 
@@ -1085,10 +1084,52 @@ class BookingController extends Controller
                 return response()->json([
                     'message' => __('Room :name is successfully booked!', ['name' => $data['roomName']])
                 ]);
+    }
 
+    public function test(){
+        $booking = DB::table('bookings')->where('id','=',1)->get();
 
+        return $booking;
+    }
 
+    public function events(Request $request){
 
+       // return $request->all();
+
+        $data = $request->all();
+
+        $start_hour = explode(" ", $data['start']);
+        $end_hour = explode(" ", $data['end']);
+
+        $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
+
+        $diff_hour =  $diff_sec/3600;
+
+        if($diff_hour > 4)
+            $diff_hour = 8;
+
+        $room = Room::find($data['roomId']);
+
+        $location_id = $room->location_id;
+
+        $location = $room->location;
+
+        $price = Price::where('room_id','=',$data['roomId'])->where('duration','=',$diff_hour)->get();
+
+            $booking = Booking::create([
+                'room_id' => $data['roomId'],
+                'booked_by' => Auth::user()->id,
+                'booked_name' => User::find(Auth::user()->id)->name.' - ' . $data['title'],
+                'start_date' => $data['start'],
+                'end_date' => $data['end'],
+                'location_id' => $location_id,
+                'location' => $location,
+                'price' => $price[0]->price,
+                'total_price' => $price[0]->price,
+                'price_tot_optional' => 0
+            ]);
+
+         return response()->json(['success' => true],200);
     }
 
 }

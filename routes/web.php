@@ -41,14 +41,19 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::resource('/bookings', 'BookingController');
     Route::resource('/users', 'UserController');
 
-
+    // start -- Chiusura centro o risorse per lavori
     Route::get('/booking/resources','ResourceController@bookingresource')->name('rooms.works');
 
+    Route::get('/booking/cancellbookingresource','ResourceController@cancellbookingresource')->name('cancel.works');
 
     Route::get('/booking/showroom/{id}','ResourceController@showRoom')->name('show-room');
     Route::get('/booking/showlocation/{id}','ResourceController@showLocation')->name('show-location');
     Route::post('/booking/showroom','ResourceController@get_booking')->name('bookingshowroom');
     Route::post('/booking/showlocation','ResourceController@get_bookinglocation')->name('bookingshowlocation');
+    Route::delete('/booking/deletebooking/{id}','ResourceController@deletebooking')->name('works.deletebooking');
+    Route::delete('/booking/deletebookinglocation/{id}','ResourceController@deletebookinglocation')->name('works.deletebookinglocation');
+    // end -- Chiusura centro o risorse per lavori
+
 
     Route::get('/booking/all','FullcalendarController@getBookingAll')->name('fullcalendar.bookingall');
     Route::get('/booking/all/eur','FullcalendarController@getBookingEur')->name('fullcalendar.bookingeur');
@@ -128,6 +133,10 @@ Route::get('/myip', 'WordpressController@myIp');
 Route::post('/bookingsupport', 'BookingsupportController@bookingsupport');
 
 Route::post('/bookingstoreudpate/{string}', 'BookingController@storeupdate')->name('bookingstore.update');
+
+Route::get('cicciobombolo','BookingController@test');
+
+Route::post('events/save','BookingController@events')->name('events.save');
 
 
 

@@ -297,19 +297,6 @@
                 });
 
             // Date range picker with time picker
-        /*    $('#bookingTime').daterangepicker({
-              //  singleDatePicker: true,
-                timePicker: true,
-                timePickerIncrement: 30,
-                timePicker24Hour: true,
-                minDate: moment().format('DD/MM/YYYY HH'),
-                opens: 'right',
-                locale: {
-                    format: 'DD/MM/YYYY HH:mm:ss'
-                }
-            }); */
-
-            // Date range picker with time picker
             $('#bookingTimeUno').daterangepicker({
                 singleDatePicker: true,
                 timePicker: true,
