@@ -70,7 +70,6 @@
     </section>
 @endsection
 
-
 @push('js')
 
 <script src="{{ url('/') }}/newfullcalendar/moment.min.js"></script>
