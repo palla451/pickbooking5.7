@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Creato il: Nov 07, 2018 alle 15:24
+-- Creato il: Nov 15, 2018 alle 10:34
 -- Versione del server: 5.7.22-0ubuntu18.04.1
 -- Versione PHP: 7.1.17-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -50,6 +50,15 @@ CREATE TABLE `bookings` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dump dei dati per la tabella `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `booked_by`, `booked_name`, `room_id`, `location_id`, `location`, `optional_id`, `price`, `price_tot_optional`, `total_price`, `room_setup`, `start_date`, `end_date`, `status`, `info`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 4, 'Giovanni D\'Apote - Evento 1', 1, 1, 'Eur', NULL, 100, 0, 100, NULL, '2018-11-15 14:00:00', '2018-11-15 17:00:00', 1, NULL, '2018-11-15 10:15:06', '2018-11-15 10:15:56', NULL),
+(2, 4, 'Giovanni D\'Apote - Evento 2', 2, 1, 'Eur', NULL, 380, 0, 380, NULL, '2018-11-15 14:00:00', '2018-11-15 23:00:00', 1, NULL, '2018-11-15 10:15:20', '2018-11-15 10:15:56', NULL),
+(3, 4, 'Giovanni D\'Apote - Evento 3', 3, 1, 'Eur', NULL, 290, 0, 290, NULL, '2018-11-15 14:00:00', '2018-11-15 21:00:00', 1, NULL, '2018-11-15 10:15:29', '2018-11-15 10:15:56', NULL);
 
 -- --------------------------------------------------------
 
@@ -583,7 +592,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `ragione_sociale`, `password`, `stat
 (1, 'Superadmin', 'superadmin@pisyek.com', '0', '$2y$10$HLj60zBD/8QZEhv/YYyXZ.Dq66PnYMPbsnsdiLG3i.9hURyoGrnIG', 1, NULL, '2018-05-29 10:48:28', '2018-05-29 10:48:28'),
 (2, 'Admin', 'admin@pisyek.com', '0', '$2y$10$kjD5zXIb3uUcMQZCBWRHnut7Dpm8pkP30mZldeeyS6qRdnOhUhB2K', 1, NULL, '2018-05-29 10:48:28', '2018-05-29 10:48:28'),
 (3, 'User', 'user@pisyek.com', '0', '$2y$10$18DSUMJv3U3tMv5RZMr2eechbIJNh6WEVvUdMNF6dcQC9Ra2bZTGe', 1, NULL, '2018-05-29 10:48:29', '2018-05-29 10:48:29'),
-(4, 'Giovanni D\'Apote', 'giovanni_dapote@outlook.it', '0', '$2y$10$R5Tfqi.yc8izWjSrgYtrieDWXOZmynQ6Ly/SVz9MF0GVu8J1y.i7S', 1, '7DLapyqNGOsNoR2fu8gB3YYSDDtm1hydoTKVcA6IMKFEFS5JhhBlMGpEATei', '2018-06-04 06:36:31', '2018-06-04 06:36:31'),
+(4, 'Giovanni D\'Apote', 'giovanni_dapote@outlook.it', '0', '$2y$10$R5Tfqi.yc8izWjSrgYtrieDWXOZmynQ6Ly/SVz9MF0GVu8J1y.i7S', 1, 'IPtrNC8XX152CJRoeMJBk8e5oYXHu6fC18tt4vS3QPFCQnr8NzuQBYobZYHu', '2018-06-04 06:36:31', '2018-06-04 06:36:31'),
 (48, 'guest', 'guest@guest.com', 'guest456dptgnn', '$2y$10$P2ugxW.a/TfJoD/q55M.KuHMWAjsQcohmPI4ETGmB2BnpfzYWyQei', 1, 'WPJW2amp7X8TrnqdCXpzMDKifHfs6SzgHmYM3y8r4GQYy1mnRVbyrj4Qd0SC', '2018-09-10 09:14:16', '2018-09-10 09:14:57'),
 (96, 'Daniele Dapote', 'daniele@gmail.com', 'pickcenter', '$2y$10$SrQGHrBPLXwYO2upTdlXcukCdR/qd9ZDz0cqEVVLzhdczWt5uWwqO', 1, '12XMsKt8C40lxX4u8p5y7mfcGkKVh3m0TdRECVKB5dYymp2aMCI68DM6xvOJ', '2018-10-03 09:27:55', '2018-10-03 09:27:55'),
 (98, 'Cipollino', 'cipollino@gmail.com', 'pickcenter', '$2y$10$FSoZdWw6eJl.bhW/dZDaIuTq3OfH6UQQ2IQo2lA6E7/TO5IO502CS', 1, NULL, '2018-10-29 08:13:53', '2018-10-29 08:13:53'),
@@ -777,7 +786,7 @@ ALTER TABLE `user_activations`
 -- AUTO_INCREMENT per la tabella `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `bookingsupports`
