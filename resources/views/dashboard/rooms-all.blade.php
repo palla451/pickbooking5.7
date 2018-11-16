@@ -73,7 +73,7 @@
     </div>
 
     <div id="eventContent" title="Event Details" style="display:none;">
-        BookingId: <span id="bookingId"></span><br>
+        <span id="bookingId" style="display: none"></span><br>
         Start: <span id="startTime"></span><br>
         End: <span id="endTime"></span><br>
         Resource: <span id="resourceName"></span><br>
