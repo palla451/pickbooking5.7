@@ -1119,7 +1119,7 @@ class BookingController extends Controller
             $booking = Booking::create([
                 'room_id' => $data['roomId'],
                 'booked_by' => Auth::user()->id,
-                'booked_name' => User::find(Auth::user()->id)->name.' - ' . $data['title'],
+                'booked_name' =>  $data['title'] .' - ' . User::find(Auth::user()->id)->name,
                 'start_date' => $data['start'],
                 'end_date' => $data['end'],
                 'location_id' => $location_id,
@@ -1130,6 +1130,15 @@ class BookingController extends Controller
             ]);
 
          return response()->json(['success' => true],200);
+    }
+
+
+
+    public function eventsSoftDelete($id){
+
+        DB::table('bookings')->where('id',$id)->update(['status'=> 2]);
+
+        return response()->json(['success' => true],200);
     }
 
 }

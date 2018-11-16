@@ -1,9 +1,11 @@
 @extends('dashboard.layouts')
 
 @push('css')
-<link href='{{ url('/') }}/newfullcalendar/fullcalendar.min.css' rel='stylesheet' />
-<link href='{{ url('/') }}/newfullcalendar/fullcalendar.print.min.css' rel='stylesheet' media='print' />
-<link href='{{ url('/') }}/newfullcalendar/scheduler.min.css' rel='stylesheet' />
+    <link href='{{ url('/') }}/newfullcalendar/fullcalendar.min.css' rel='stylesheet' />
+    <link href='{{ url('/') }}/newfullcalendar/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+    <link href='{{ url('/') }}/newfullcalendar/scheduler.min.css' rel='stylesheet' />
+    <link href='{{ url('/') }}/jqueryui/jquery-ui.min.css' rel='stylesheet' />
+    <link href='{{ url('/') }}/jqueryui/themes/smoothness/jquery-ui.css' rel='stylesheet' />
 <style>
     #calendar {
         max-width: 1024px;
@@ -32,8 +34,6 @@
             <!-- Button trigger modal -->
             <div class="col-md-12">
                 <div id="calendar"></div>
-
-
                 <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -67,14 +67,27 @@
                 </div><!-- /.modal -->
             </div>
         </div>
+
+        <div id="eventContent" title="Event Details" style="display:none;">
+            BookingId: <span id="bookingId"></span><br>
+            Start: <span id="startTime"></span><br>
+            End: <span id="endTime"></span><br>
+            Resource: <span id="resourceName"></span><br>
+            Price:&euro; <span id="price"></span><br>
+            Optional:&euro; <span id="optional"></span><br>
+            Total Price:&euro; <span id="total_price"></span><br><br />
+            <p class="eventDelete"><button type="submit" class="btn-sm btn-danger">delete</button></p>
+        </div>
+
+
     </section>
 @endsection
 
 @push('js')
-
-<script src="{{ url('/') }}/newfullcalendar/moment.min.js"></script>
-<script src="{{ url('/') }}/newfullcalendar/fullcalendar.min.js"></script>
-<script src="{{ url('/') }}/newfullcalendar/scheduler.min.js"></script>
+    <script src="{{ url('/') }}/newfullcalendar/moment.min.js"></script>
+    <script src="{{ url('/') }}/newfullcalendar/fullcalendar.min.js"></script>
+    <script src="{{ url('/') }}/newfullcalendar/scheduler.min.js"></script>
+    <script src="{{ url('/') }}/jqueryui/jquery-ui.min.js"></script>
 
 
 
@@ -97,7 +110,7 @@
         selectable: true,
         aspectRatio: 1.8,
         scrollTime: '08:00', // undo default 6am scrollTime
-        resources: '{!! route('fullcalendar.roomall') !!}',
+        resources: '{!! route('fullcalendar.roomeur') !!}',
         events: '{!! route('fullcalendar.bookingeur') !!}',
         select: function( start, end, jsEvent, view, resourceId, event) {
 
@@ -147,27 +160,38 @@
             });
         },
 
-        eventMouseover: function(calEvent, jsEvent) {
-            var tooltip = '<div class="tooltipevent" style="padding-left: 2px;border-radius: 5px 5px 5px 5px;;width:180px;height:140px;background:darkorange;position:absolute;z-index:10001;">' + calEvent.name + '<br />' + calEvent.title
-                    +   '<br />Sede ' + calEvent.location
-                    +   '<br /> dal ' + calEvent.start.format('DD-MM-YYYY - HH:mm')
-                    +   '<br /> al ' + calEvent.end.format('DD-MM-YYYY - HH:mm')
-                    +   '<br />&euro; ' + calEvent.price + ',00'
-                    +    '</div>';
-            $("body").append(tooltip);
-            $(this).mouseover(function(e) {
-                $(this).css('z-index', 10000);
-                $('.tooltipevent').fadeIn('500');
-                $('.tooltipevent').fadeTo('10', 1.9);
-            }).mousemove(function(e) {
-                $('.tooltipevent').css('top', e.pageY + 10);
-                $('.tooltipevent').css('left', e.pageX + 20);
+        eventRender: function (event, element) {
+            element.attr('href', 'javascript:void(0);');
+            element.click(function() {
+                console.log(event);
+                $("#startTime").html(moment(event.start).format('Do MMM HH:mm'));
+                $("#endTime").html(moment(event.end).format('Do MMM HH:mm'));
+                $("#resourceName").html(event.name);
+                $("#bookingId").html(event.id);
+                $("#price").html(event.price);
+                $("#optional").html(event.price_tot_optional);
+                $("#total_price").html(event.total_price);
+                $("#eventLink").attr('href', event.url);
+                $("#eventContent").dialog({ modal: true, title: event.title, width:400});
+                $('.eventDelete').off('click').on('click',function(){
+                    var id = event.id;
+                    $('#eventContent').dialog('close');
+                    $.ajax({
+                        //  url:'/dashboard/booking/deletebooking/'+id,
+                        url:'/events/delete/'+id,
+                        type: 'delete',
+                        data: {
+                            '_token': $('input[name=_token]').val(),
+                            'id': event.id
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            //  location.reload();
+                            $("#calendar").fullCalendar( 'refetchEvents');
+                        }
+                    });
+                });
             });
-        },
-
-        eventMouseout: function(calEvent, jsEvent) {
-            $(this).css('z-index', 8);
-            $('.tooltipevent').remove();
         }
     });
 

@@ -228,11 +228,4 @@ class ResourceController extends Controller
     }
 
 
-    public function eventsSoftDelete($id){
-
-        DB::table('bookings')->where('id',$id)->update(['status'=> 2]);
-
-        return response()->json(['success' => true],200);
-    }
-
 }

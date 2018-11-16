@@ -78,7 +78,8 @@
         End: <span id="endTime"></span><br>
         Resource: <span id="resourceName"></span><br>
         Price:&euro; <span id="price"></span><br>
-        <p id="eventInfo">ciao</p>
+        Optional:&euro; <span id="optional"></span><br>
+        Total Price:&euro; <span id="total_price"></span><br><br />
         <p class="eventDelete"><button type="submit" class="btn-sm btn-danger">delete</button></p>
     </div>
 
@@ -168,15 +169,16 @@
                 element.attr('href', 'javascript:void(0);');
                 element.click(function() {
                     console.log(event);
-                    $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-                    $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+                    $("#startTime").html(moment(event.start).format('Do MMM HH:mm'));
+                    $("#endTime").html(moment(event.end).format('Do MMM HH:mm'));
                     $("#resourceName").html(event.name);
                     $("#bookingId").html(event.id);
                     $("#price").html(event.price);
-                    $("#eventInfo").html(event.description);
+                    $("#optional").html(event.price_tot_optional);
+                    $("#total_price").html(event.total_price);
                     $("#eventLink").attr('href', event.url);
                     $("#eventContent").dialog({ modal: true, title: event.title, width:400});
-                    $('.eventDelete').on('click',function(){
+                    $('.eventDelete').off('click').on('click',function(){
                         var id = event.id;
                         $('#eventContent').dialog('close');
                         $.ajax({

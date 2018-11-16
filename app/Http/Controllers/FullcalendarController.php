@@ -43,6 +43,8 @@ class FullcalendarController extends Controller
                 'end_date',
                 'name',
                 'price',
+                'price_tot_optional',
+                'total_price',
                 'rooms.location'
             ]);
 
@@ -56,6 +58,8 @@ class FullcalendarController extends Controller
             $booking['name'] = (string)$event->name;
             $booking['location'] = (string)$event->location;
             $booking['price'] = (string)$event->price;
+            $booking['price_tot_optional'] = (string)$event->price_tot_optional;
+            $booking['total_price'] = (string)$event->total_price;
             $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
@@ -76,6 +80,8 @@ class FullcalendarController extends Controller
                 'end_date',
                 'name',
                 'price',
+                'price_tot_optional',
+                'total_price',
                 'rooms.location'
             ]);
 
@@ -89,6 +95,8 @@ class FullcalendarController extends Controller
             $booking['name'] = (string)$event->name;
             $booking['location'] = (string)$event->location;
             $booking['price'] = (string)$event->price;
+            $booking['price_tot_optional'] = (string)$event->price_tot_optional;
+            $booking['total_price'] = (string)$event->total_price;
             $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
@@ -108,6 +116,8 @@ class FullcalendarController extends Controller
                 'end_date',
                 'name',
                 'price',
+                'price_tot_optional',
+                'total_price',
                 'rooms.location'
             ]);
 
@@ -121,6 +131,8 @@ class FullcalendarController extends Controller
             $booking['name'] = (string)$event->name;
             $booking['location'] = (string)$event->location;
             $booking['price'] = (string)$event->price;
+            $booking['price_tot_optional'] = (string)$event->price_tot_optional;
+            $booking['total_price'] = (string)$event->total_price;
             $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });
@@ -140,6 +152,8 @@ class FullcalendarController extends Controller
                 'end_date',
                 'name',
                 'price',
+                'price_tot_optional',
+                'total_price',
                 'rooms.location'
             ]);
 
@@ -153,6 +167,8 @@ class FullcalendarController extends Controller
             $booking['name'] = (string)$event->name;
             $booking['location'] = (string)$event->location;
             $booking['price'] = (string)$event->price;
+            $booking['price_tot_optional'] = (string)$event->price_tot_optional;
+            $booking['total_price'] = (string)$event->total_price;
             $booking['eventColor'] = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             return $booking;
         });

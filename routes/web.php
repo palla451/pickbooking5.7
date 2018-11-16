@@ -137,7 +137,7 @@ Route::post('/bookingstoreudpate/{string}', 'BookingController@storeupdate')->na
 Route::get('cicciobombolo','BookingController@test');
 
 Route::post('events/save','BookingController@events')->name('events.save');
-Route::delete('events/delete/{id}','ResourceController@eventsSoftDelete')->name('events.softDelete');
+Route::delete('events/delete/{id}','BookingController@eventsSoftDelete')->name('events.softDelete');
 
 
 
