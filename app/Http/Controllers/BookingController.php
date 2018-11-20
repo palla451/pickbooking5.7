@@ -7,6 +7,7 @@ use App\BookingOptional;
 use App\Enumerations\BookingStatus;
 use App\Enumerations\DateFormat;
 use App\Http\Requests\StoreBooking;
+use App\Mail\EmailBookingVerification;
 use App\Optional;
 use App\Price;
 use App\Room;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Location;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 
 
@@ -72,6 +74,7 @@ class BookingController extends Controller
 
         $user = Auth::user();
 
+
         $data = $request->all();
 
     //   return $data;
@@ -108,7 +111,7 @@ class BookingController extends Controller
                 $duration = 8;
                 $price = Price::where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
 
-				$booking = Booking::create([
+                $booking = Booking::create([
                     'room_id' => $data['roomId'],
                     'booked_by' => Auth::user()->id,
                     'booked_name' => User::find(Auth::user()->id)->name,
@@ -120,7 +123,6 @@ class BookingController extends Controller
                     'total_price' => $price[0]->price + $data['tot_optional'],
                     'price_tot_optional' => $data['tot_optional']
                 ]);
-
 
                 $optional = BookingOptional::create([
                     'booking_id' => $booking->id,
@@ -146,6 +148,8 @@ class BookingController extends Controller
                     'lavagna_interattiva' => $data['lavagna_interattiva'],
                     'tot_optional' => $data['tot_optional']
                 ]);
+
+                Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
 
 
            // START insert order in woocommerce
@@ -186,6 +190,8 @@ class BookingController extends Controller
 
             // END
 
+
+
                 return response()->json([
                     'message' => __('Room :name is successfully booked!', ['name' => $data['roomName']])
                 ]);
@@ -203,8 +209,38 @@ class BookingController extends Controller
                     'end_date' => $end,
                     'location_id' => $room->location_id,
                     'location' => $room->location,
-                    'price' => $price[0]->price
+                    'price' => $price[0]->price,
+                    'total_price' => $price[0]->price + $data['tot_optional'],
+                    'price_tot_optional' => $data['tot_optional']
                 ]);
+
+
+                $optional = BookingOptional::create([
+                    'booking_id' => $booking->id,
+                    'coffee_break' => $data['coffee_break'],
+                    'quick_lunch' => $data['quick_lunch'],
+                    'videoproiettore' => $data['videoproiettore'],
+                    'permanent_coffee' => $data['permanent_coffee'],
+                    'wifi' => $data['wifi'],
+                    'videoconferenza' => $data['videoconferenza'],
+                    'webconference' => $data['webconference'],
+                    'lavagna_foglimobili' => $data['lavagna_foglimobili'],
+                    'stampante' => $data['stampante'],
+                    'permanent_coffeeplus' => $data['permanent_coffeeplus'],
+                    'connessione_viacavo' => $data['permanent_coffeeplus'],
+                    'integrazione_permanentcoffee' => $data['integrazione_permanentcoffee'],
+                    'upgrade_banda10mb' => $data['upgrade_banda10mb'],
+                    'upgrade_banda8mb' => $data['upgrade_banda8mb'],
+                    'upgrade_banda20mb' => $data['upgrade_banda20mb'],
+                    'wirless_4mb20accessi' => $data['wirless_4mb20accessi'],
+                    'wirless_8mb35accessi' => $data['wirless_8mb35accessi'],
+                    'videoregistrazione' => $data['videoregistrazione'],
+                    'fattorino' => $data['fattorino'],
+                    'lavagna_interattiva' => $data['lavagna_interattiva'],
+                    'tot_optional' => $data['tot_optional']
+                ]);
+
+                Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
 
                 // START insert order in woocommerce
 
@@ -267,7 +303,6 @@ class BookingController extends Controller
 
             $price_final = ($price[0]->price) * $diff_day;
 
-
             $booking = Booking::create([
                 'room_id' => $data['roomId'],
                 'booked_by' => Auth::user()->id,
@@ -276,8 +311,38 @@ class BookingController extends Controller
                 'end_date' => $end,
                 'location_id' => $room->location_id,
                 'location' => $room->location,
-                'price' => $price_final
+                'price' => $price[0]->price,
+                'total_price' => $price[0]->price + $data['tot_optional'],
+                'price_tot_optional' => $data['tot_optional']
             ]);
+
+
+            $optional = BookingOptional::create([
+                'booking_id' => $booking->id,
+                'coffee_break' => $data['coffee_break'],
+                'quick_lunch' => $data['quick_lunch'],
+                'videoproiettore' => $data['videoproiettore'],
+                'permanent_coffee' => $data['permanent_coffee'],
+                'wifi' => $data['wifi'],
+                'videoconferenza' => $data['videoconferenza'],
+                'webconference' => $data['webconference'],
+                'lavagna_foglimobili' => $data['lavagna_foglimobili'],
+                'stampante' => $data['stampante'],
+                'permanent_coffeeplus' => $data['permanent_coffeeplus'],
+                'connessione_viacavo' => $data['permanent_coffeeplus'],
+                'integrazione_permanentcoffee' => $data['integrazione_permanentcoffee'],
+                'upgrade_banda10mb' => $data['upgrade_banda10mb'],
+                'upgrade_banda8mb' => $data['upgrade_banda8mb'],
+                'upgrade_banda20mb' => $data['upgrade_banda20mb'],
+                'wirless_4mb20accessi' => $data['wirless_4mb20accessi'],
+                'wirless_8mb35accessi' => $data['wirless_8mb35accessi'],
+                'videoregistrazione' => $data['videoregistrazione'],
+                'fattorino' => $data['fattorino'],
+                'lavagna_interattiva' => $data['lavagna_interattiva'],
+                'tot_optional' => $data['tot_optional']
+            ]);
+
+            Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
 
             // START insert order in woocommerce
 
@@ -343,7 +408,7 @@ class BookingController extends Controller
             $price = DB::table('prices')->where('duration', '=', $duration)->where('price_id', '=', $roomId)->get();
         }
 
-        Booking::create([
+        $booking = Booking::create([
             'room_id' => $data['roomId'],
             'booked_by' => Auth::user()->id,
             'booked_name' => User::find(Auth::user()->id)->name,
@@ -351,8 +416,39 @@ class BookingController extends Controller
             'end_date' => $end,
             'location_id' => $room->location_id,
             'location' => $room->location,
-            'price' => $price[0]->price
+            'price' => $price[0]->price,
+            'total_price' => $price[0]->price + $data['tot_optional'],
+            'price_tot_optional' => $data['tot_optional']
         ]);
+
+        $optional = BookingOptional::create([
+            'booking_id' => $booking->id,
+            'coffee_break' => $data['coffee_break'],
+            'quick_lunch' => $data['quick_lunch'],
+            'videoproiettore' => $data['videoproiettore'],
+            'permanent_coffee' => $data['permanent_coffee'],
+            'wifi' => $data['wifi'],
+            'videoconferenza' => $data['videoconferenza'],
+            'webconference' => $data['webconference'],
+            'lavagna_foglimobili' => $data['lavagna_foglimobili'],
+            'stampante' => $data['stampante'],
+            'permanent_coffeeplus' => $data['permanent_coffeeplus'],
+            'connessione_viacavo' => $data['permanent_coffeeplus'],
+            'integrazione_permanentcoffee' => $data['integrazione_permanentcoffee'],
+            'upgrade_banda10mb' => $data['upgrade_banda10mb'],
+            'upgrade_banda8mb' => $data['upgrade_banda8mb'],
+            'upgrade_banda20mb' => $data['upgrade_banda20mb'],
+            'wirless_4mb20accessi' => $data['wirless_4mb20accessi'],
+            'wirless_8mb35accessi' => $data['wirless_8mb35accessi'],
+            'videoregistrazione' => $data['videoregistrazione'],
+            'fattorino' => $data['fattorino'],
+            'lavagna_interattiva' => $data['lavagna_interattiva'],
+            'tot_optional' => $data['tot_optional']
+        ]);
+
+        Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
+
+
     }
 
     /**

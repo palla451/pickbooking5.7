@@ -139,6 +139,10 @@ Route::get('cicciobombolo','BookingController@test');
 Route::post('events/save','BookingController@events')->name('events.save');
 Route::delete('events/delete/{id}','BookingController@eventsSoftDelete')->name('events.softDelete');
 
+// Test send Email
+
+Route::post('/send', 'EmailBookingVerification@send');
+
 
 
 
