@@ -113,8 +113,25 @@ class BookingOptionalController extends Controller
         $optional->wirless_10mb50accessi = $this->wirless_10mb50accessi($request->wirless_10mb50accessi);
         $optional->videoregistrazione = $this->videoregistrazione($request->videoregistrazione,$num_day);
         $optional->lavagna_interattiva = $this->lavagna_interattiva($request->lavagna_interattiva,$num_day);
+        $optional->tot_optional =   $optional->coffee_break +
+                                    $optional->quick_lunch  +
+                                    $optional->videoproiettore  +
+                                    $optional->wifi         +
+                                    $optional->videoconferenza  +
+                                    $optional->webconference    +
+                                    $optional->lavagna_foglimobili+
+                                    $optional->stampante        +
+                                    $optional->upgrade_banda10mb+
+                                    $optional->wirless_4mb20accessi+
+                                    $optional->wirless_8mb35accessi+
+                                    $optional->wirless_10mb50accessi+
+                                    $optional->videoregistrazione+
+                                    $optional->lavagna_interattiva;
 
+        $booking->price_tot_optional = $optional->tot_optional;
+        $booking->total_price =  $optional->tot_optional + $booking->price;
 
+        $booking->update();
         $optional->save();
 
         return redirect('/dashboard/bookings');

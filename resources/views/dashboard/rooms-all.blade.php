@@ -80,10 +80,21 @@
         Price:&euro; <span id="price"></span><br>
         Optional:&euro; <span id="optional"></span><br>
         Total Price:&euro; <span id="total_price"></span><br><br />
-        <div class="row">
-            <div class="col-sm-4 eventDelete"><button type="submit" class="btn-xs btn-danger">delete</button></div>
-            <div class="col-sm-4 eventOptional"><button type="submit" class="btn-xs btn-primary">optional</button></div>
-        </div>
+            <div class="col-sm-4 eventDelete">
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </div>
+            <div class="col-sm-4 eventOptional">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                </button>
+            </div>
+            <div class="col-sm-4 closeEvent">
+                <button type="submit" class="btn btn-secondary btn-lg">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
     </div>
 
 
@@ -223,6 +234,10 @@
                         });
                     });
                     // END Add Optional
+
+                    $('.closeEvent').off('click').on('click',function(){
+                        $('#eventContent').dialog('close');
+                    });
 
 
                 });
