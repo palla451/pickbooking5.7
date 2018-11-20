@@ -76,7 +76,10 @@
             Price:&euro; <span id="price"></span><br>
             Optional:&euro; <span id="optional"></span><br>
             Total Price:&euro; <span id="total_price"></span><br><br />
-            <p class="eventDelete"><button type="submit" class="btn-sm btn-danger">delete</button></p>
+            <div class="row">
+                <div class="col-sm-4 eventDelete"><button type="submit" class="btn-xs btn-danger">delete</button></div>
+                <div class="col-sm-4 eventOptional"><button type="submit" class="btn-xs btn-primary">optional</button></div>
+            </div>
         </div>
 
 
@@ -191,6 +194,29 @@
                         }
                     });
                 });
+
+                // START Add Optional
+                $('.eventOptional').off('click').on('click',function(){
+                    var id = event.id;
+                    $('#eventContent').dialog('close');
+                    $.ajax({
+                        //  url:'/dashboard/booking/deletebooking/'+id,
+                        url:'/dashboard/bookingoptionals/optionalcreate/'+id,
+                        type: 'get',
+                        data: {
+                            '_token': $('input[name=_token]').val(),
+                            'id': event.id
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            window.location.href = '/dashboard/bookingoptionals/optionalcreate/'+id;
+                            //  location.reload();
+                        }
+                    });
+                });
+                // END Add Optional
+
+
             });
         }
     });

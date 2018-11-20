@@ -388,8 +388,6 @@ class BookingController extends Controller
 
 
             // END
-
-
             return response()->json([
                 'message' => __('Room :name is successfully booked!', ['name' => $data['roomName']])
             ]);
