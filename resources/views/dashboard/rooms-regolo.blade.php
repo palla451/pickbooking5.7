@@ -8,11 +8,12 @@
 <link href='{{ url('/') }}/jqueryui/themes/smoothness/jquery-ui.css' rel='stylesheet' />
 <style>
     #calendar {
-        max-width: 1024px;
+        max-width: 1440px;
         margin-top: 40px;
         margin-left: auto;
         margin-right: auto;
         background-color: #ffffff;
+        font-size: 20px;
     }
 </style>
 <title>Booking Calendar Eur</title>
@@ -102,7 +103,7 @@
 <script src="{{ url('/') }}/newfullcalendar/fullcalendar.min.js"></script>
 <script src="{{ url('/') }}/newfullcalendar/scheduler.min.js"></script>
 <script src="{{ url('/') }}/jqueryui/jquery-ui.min.js"></script>
-
+<script src="{{ url('/') }}/js/sweetalert.min.js"></script>
 
 
 <script>
@@ -126,52 +127,69 @@
         scrollTime: '08:00', // undo default 6am scrollTime
         resources: '{!! route('fullcalendar.roomregolo') !!}',
         events: '{!! route('fullcalendar.bookingregolo') !!}',
-        select: function( start, end, jsEvent, view, resourceId, event) {
+        select: function( start, end, jsEvent, view, resourceId,event) {
 
-            $('#event-modal').find('input[name=title]').val('');
-            // set values in inputs
-            $('#event-modal').find('input[name=evtStart]').val(
-                    start.format('YYYY-MM-DD HH:mm:ss')
-            );
-            $('#event-modal').find('input[name=evtEnd]').val(
-                    end.format('YYYY-MM-DD HH:mm:ss')
-            );
-            // show modal dialog
-            $('#event-modal').modal('show');
-            /*
-             bind event submit. Will perform a ajax call in order to save the event to the database.
-             When save is successful, close modal dialog and refresh fullcalendar.
-             */
+            var hours = Math.abs(end - start) / 36e5;
 
-            $("#event-modal .save").off('click').on('click', function(e) {
+            var integer = Number.isInteger(hours);
 
-                var id = resourceId['id'];
-                var roomName = resourceId['title'];
-                var title = $('#title').val();
-                var start = $('#evtStart').val();
-                var end = $('#evtEnd').val();
-                $('#event-modal').modal('hide');
+            //  alert(integer);
 
-                $.ajax({
-                    url: '{{ route('events.save') }}',
-                    data: $("#event-modal").serialize(),
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        '_token': $('input[name=_token]').val(),
-                        'title': title,
-                        'start': start,
-                        'end': end,
-                        'roomId': id,
-                        'roomName': roomName
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        //  location.reload();
-                        $("#calendar").fullCalendar( 'refetchEvents');
-                    }
+            if(integer){
+                $('#event-modal').find('input[name=title]').val('');
+                // set values in inputs
+                $('#event-modal').find('input[name=evtStart]').val(
+                        start.format('YYYY-MM-DD HH:mm:ss')
+                );
+                $('#event-modal').find('input[name=evtEnd]').val(
+                        end.format('YYYY-MM-DD HH:mm:ss')
+                );
+                // show modal dialog
+                $('#event-modal').modal('show');
+                /*
+                 bind event submit. Will perform a ajax call in order to save the event to the database.
+                 When save is successful, close modal dialog and refresh fullcalendar.
+                 */
+
+                $("#event-modal .save").off('click').on('click', function(e) {
+
+                    var id = resourceId['id'];
+                    var roomName = resourceId['title'];
+                    var title = $('#title').val();
+                    var start = $('#evtStart').val();
+                    var end = $('#evtEnd').val();
+
+
+                    $('#event-modal').modal('hide');
+
+                    $.ajax({
+                        url: '{{ route('events.save') }}',
+                        data: $("#event-modal").serialize(),
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            '_token': $('input[name=_token]').val(),
+                            'title': title,
+                            'start': start,
+                            'end': end,
+                            'roomId': id,
+                            'roomName': roomName
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            //  location.reload();
+                            $("#calendar").fullCalendar( 'refetchEvents');
+                        }
+                    });
                 });
-            });
+            } else {
+                // alert ('Devi selezionare per multipli di 1 ora a partire da start');
+                // e.preventDefault();
+                swal ( "Oops" ,  "Puoi selezionare multipli di 1h!" ,  "error" );
+            }
+
+
+
         },
 
         eventRender: function (event, element) {
