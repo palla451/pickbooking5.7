@@ -143,6 +143,8 @@ Route::delete('events/delete/{id}','BookingController@eventsSoftDelete')->name('
 
 Route::post('/send', 'EmailBookingVerification@send');
 
+Route::get('generatepdf/{id}','ViewsController@generatePDF');
+
 
 
 

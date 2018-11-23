@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en-EN">
 <head>
     <meta charset="utf-8">
-    <style>
-        body {
-            background-color: #FF9900;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div>
@@ -119,9 +118,19 @@
         </tr>
         </tbody>
     </table>
+
+<div class="col-md-4">
+    Di seguito il modulo di Prenotazioni da rinviare compilato e firmato tramite email a <a href="mailto:info@pickcenter.com">info@pickcenter.com</a>
+    <p>
+        <a href="{{action('ViewsController@generatePDF', $booking->id)}}"><img src="{{ url('/') }}/img/pdf.png" width="60" /></a>
+    </p>
+</div>
+
+
 </div>
 
 </div>
+
 
 </body>
 </html>

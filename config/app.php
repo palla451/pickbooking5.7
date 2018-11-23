@@ -169,7 +169,8 @@ return [
          */
         Barryvdh\Debugbar\ServiceProvider::class,
         Pixelpeter\Woocommerce\WoocommerceServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -229,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Woocommerce' => Pixelpeter\Woocommerce\Facades\Woocommerce::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

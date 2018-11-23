@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Barryvdh\DomPDF\Facade as PDF;;
 
 class EmailBookingVerification extends Mailable
 {
@@ -40,4 +41,7 @@ class EmailBookingVerification extends Mailable
             ->from(config('mail.from'))
             ->subject(config('app.name') . ' - Booking Online');
     }
+
+
+
 }
