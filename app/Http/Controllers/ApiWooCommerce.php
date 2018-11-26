@@ -5,6 +5,7 @@ use App\BookingOptional;
 use App\Bookingsupport;
 use App\Http\Controllers\BookingController;
 use App\Location;
+use App\Mail\EmailBookingVerification;
 use App\Room;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User;
@@ -17,7 +18,7 @@ use App\Price;
 use App\Booking;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 
 class ApiWooCommerce extends Controller
@@ -61,7 +62,7 @@ class ApiWooCommerce extends Controller
                 $start_hour = explode(" ", $start);
                 $end_hour = explode(" ", $end);
                 $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
-                $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
+                $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su piï¿½ giorni
                 $duration = $diff_sec / 3600;
                 // store
                 if ($diff_day == 0) {
@@ -214,6 +215,7 @@ class ApiWooCommerce extends Controller
 
         $user_id = $user[0]->id;
         $userName = $user[0]->name;
+        $user_email = $user[0]->email;
 
         $db = DB::connection('mysql2');
 
@@ -230,6 +232,7 @@ class ApiWooCommerce extends Controller
 
 
         $roomId = $response[0]['roomId'];
+        $room = Room::find($roomId);
         $roomName = $response[0]['roomName'];
         $bookingTime = $response[0]['bookingTime'];
         $price = $response[0]['price_room'];
@@ -250,7 +253,7 @@ class ApiWooCommerce extends Controller
 
         $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
 
-        $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su più giorni
+        $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400; // prenotazione su piï¿½ giorni
         $duration = $diff_sec / 3600;
 
       //  return $duration;
@@ -312,7 +315,7 @@ class ApiWooCommerce extends Controller
                     ->where('mac_address','=', $mac_address)
                     ->delete();
 
-
+                Mail::to($user_email)->send(new EmailBookingVerification($booking,$optional,$room));
                 // START insert order in woocommerce
 
                 // dati necessari da ricavare sul db di woocommerce
@@ -421,6 +424,7 @@ class ApiWooCommerce extends Controller
                     'lavagna_interattiva' => $response[0]['lavagna_interattiva']
                 ]);
 
+                Mail::to($user_email)->send(new EmailBookingVerification($booking, $optional, $room));
                 // START insert order in woocommerce
 
                 // dati necessari da ricavare sul db di woocommerce
@@ -536,6 +540,8 @@ class ApiWooCommerce extends Controller
             $controller = Bookingsupport::where('ip','=',$ip)
                 ->where('mac_address','=', $mac_address)
                 ->delete();
+
+            Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
 
             return Redirect::to('http://142.93.49.84/mio-account/')->with('message', 'Complimenti!'); //is this actually OK
         }

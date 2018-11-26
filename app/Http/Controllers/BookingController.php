@@ -1133,7 +1133,7 @@ class BookingController extends Controller
                 'lavagna_interattiva' => $data['lavagna_interattiva'],
                 'tot_optional' => $data['tot_optional']
             ]);
-        
+
              Mail::to($user->email)->send(new EmailBookingVerification($booking, $optional, $room));
 
                 // START insert order in woocommerce
