@@ -164,8 +164,8 @@ class ResourceController extends Controller
 
 
 
-        if ($bookingTimeUno >= $bookingTimeDue){
-            return imap_alerts();
+        if ($start >= $end){
+           return 'error end is lower start';
         } else {
 
             $booking_search = Booking::where('location_id','=',$request['locationId'])

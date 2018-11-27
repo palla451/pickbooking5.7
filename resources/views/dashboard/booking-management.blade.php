@@ -148,13 +148,7 @@
                                         <!-- /.form-group -->
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>&nbsp;</label>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#addModal" data-whatever="" style="width: 100%">Add Optional</button>
-                                        </div>
-                                        <!-- /.form-group -->
-                                    </div>
+
 
 
                                     <!-- /.col -->

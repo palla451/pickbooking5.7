@@ -144,8 +144,12 @@
 <table style="background-color: #d4efff; width: 100%;" border="0,5"><caption>&nbsp;</caption>
     <tbody>
     <tr style="height: 12.3125px;">
-        <td style="width: 21.6471%; height: 12.3125px;">location</td>
+        <td style="width: 21.6471%; height: 12.3125px;">Sede</td>
         <td style="width: 74.3529%; height: 12.3125px;">{{$booking->location}}</td>
+    </tr>
+    <tr style="height: 13px;">
+        <td style="width: 21.6471%; height: 13px;">Risorsa</td>
+        <td style="width: 74.3529%; height: 13px;">{{$room->name}}</td>
     </tr>
     <tr style="height: 13px;">
         <td style="width: 21.6471%; height: 13px;">data inizio</td>
