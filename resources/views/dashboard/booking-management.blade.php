@@ -179,11 +179,6 @@
                                      </tr>
                                      </tfoot>
                                 </table>
-                                <p>
-                                    <table>
-                                        @include('optionals.form')
-                                    </table>
-                                </p>
                             </div>
                         </div>@endpermission
                     </div>
@@ -191,6 +186,11 @@
             </div> <!-- /.col -->
         </div> <!-- /.row -->
     </section>
+
+
+
+@include('optionals.modal_form')
+
 @endsection
 
 
@@ -207,6 +207,7 @@
         $('#result').hide(); // hide booking search result table
 
         $(document).ready(function () {
+
 
             $('#bookingList').DataTable({
                 initComplete: function(){
@@ -352,145 +353,237 @@
                         ]
                     }).on('click', '.btn-book', function(event){
                         event.preventDefault();
-
-                // START optionals
-                        var coffee_break = $('#coffee_break').val()*6.5;
-                        var quick_lunch = $('#quick_lunch').val()*1;
-                        var permanent_coffee = $('#permanent_coffee').val()*7;
-                        var wifi = $('#wifi').val()*50;
-                        var lavagna_foglimobili = $('#lavagna_foglimobili').val()*1;
-                        var stampante = $('#stampante').val()*1;
-                        var permanent_coffeeplus = $('#permanent_coffeeplus').val()*1;
-                        var connessione_viacavo = $('#connessione_viacavo').val()*1;
-                        var integrazione_permanentcoffee = $('#integrazione_permanentcoffee').val()*1;
-                        var upgrade_banda10mb = $('#upgrade_banda10mb').val()*1;
-                        var upgrade_banda8mb = $('#upgrade_banda8mb').val()*1;
-                        var upgrade_banda20mb = $('#upgrade_banda20mb').val()*1;
-                        var wirless_4mb20accessi = $('#wirless_4mb20accessi').val()*1;
-                        var wirless_8mb35accessi = $('#wirless_8mb35accessi').val()*1;
-                        var wirless_10mb50accessi = $('#wirless_10mb50accessi').val()*1;
-                        var fattorino = $('#fattorino').val()*1;
-
-                        // START checkbox
-                        if ($('#lavagna_interattiva').is(':checked')){
-                            var lavagna_interattiva = 75;
-                            //console.log(lavagna_interattiva);
-                        } else {
-                            var lavagna_interattiva = 0;
-                            // console.log(lavagna_interattiva);
-                        }
-
-                        if ($('#videoproiettore').is(':checked')){
-                            var videoproiettore = 55;
-                        //    console.log(videoproiettore);
-                        } else {
-                            var videoproiettore = 0;
-                            //    console.log(videoproiettore);
-                        }
-
-                        if ($('#videoconferenza').is(':checked')){
-                            var videoconferenza = 45;
-                            //    console.log(videoconferenza);
-                        } else {
-                            var videoconferenza = 0;
-                            // console.log(videoconferenza);
-                        }
-
-                        if ($('#webconference').is(':checked')){
-                            var webconference = 35;
-                            // console.log(webconference);
-                        } else {
-                            var webconference = 0;
-                            // console.log(webconference);
-                        }
-
-                        if ($('#videoregistrazione').is(':checked')){
-                            var videoregistrazione = 25;
-                            // console.log(videoregistrazione);
-                        } else {
-                            var videoregistrazione = 0;
-                            // console.log(videoregistrazione);
-                        }
-                        //END checkbox
-
-                       var tot_optional = coffee_break+quick_lunch+videoproiettore+permanent_coffee+wifi+videoconferenza+webconference+lavagna_foglimobili+stampante+permanent_coffeeplus+connessione_viacavo+integrazione_permanentcoffee+upgrade_banda8mb+upgrade_banda20mb+upgrade_banda10mb+wirless_4mb20accessi+wirless_8mb35accessi+videoregistrazione+fattorino+lavagna_interattiva;
-
-                // END optionals
-
+                        var price = $(this).data('price');
+                        var room_name = $(this).data('name');
+                        $('#addModal').modal('show');
+                        $('.modal-title').html($(this).data('name'));
+                        $('.price_resource').html($(this).data('price'));
+                        $('.total').text(price);
                         var roomName = $(this).data('name');
                         var roomId = $(this).data('id');
                         var url = $(this).data('remote');
                         var token = $('meta[name="csrf-token"]').attr('content');
                         var clickedRow = $('#searchResult')
-                                            .DataTable()
-                                            .row($(this).parents('tr'));
+                            .DataTable()
+                            .row($(this).parents('tr'));
 
-                        swal({
-                            title: roomName,
-                            text: "{!! __("Are you sure to book this room?") !!}",
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#ccc',
-                            confirmButtonText: "{!! __("Yes, book it!") !!}",
-                            cancelButtonText: '{!! __('Cancel') !!}',
-                            allowOutsideClick: false
-                        })
-                        .then(function(){
-                            var input = {
-                                '_token' : token,
-                                'roomId' : roomId,
-                                'roomName' : roomName,
-                                'bookingTime': bookingTime,
-                                'coffee_break' : coffee_break,
-                                'quick_lunch' : quick_lunch,
-                                'videoproiettore': videoproiettore,
-                                'permanent_coffee': permanent_coffee,
-                                'wifi': wifi,
-                                'videoconferenza': videoconferenza,
-                                'webconference': webconference,
-                                'lavagna_foglimobili': lavagna_foglimobili,
-                                'stampante': stampante,
-                                'permanent_coffeeplus': permanent_coffeeplus,
-                                'connessione_viacavo': connessione_viacavo,
-                                'integrazione_permanentcoffee': integrazione_permanentcoffee,
-                                'upgrade_banda10mb': upgrade_banda10mb,
-                                'upgrade_banda8mb': upgrade_banda8mb,
-                                'upgrade_banda20mb': upgrade_banda20mb,
-                                'wirless_4mb20accessi': wirless_4mb20accessi,
-                                'wirless_8mb35accessi': wirless_8mb35accessi,
-                                'wirless_10mb50accessi': wirless_10mb50accessi,
-                                'videoregistrazione': videoregistrazione,
-                                'fattorino': fattorino,
-                                'lavagna_interattiva': lavagna_interattiva,
-                                'tot_optional' : tot_optional
-                            };
-                            console.log(input);
-                            $.ajax({
-                                type: "post",
-                                url: url,
-                                data: input,
-                                dataType: 'json'
-                            })
-                            .done(function(data){
-                                swal({
-                                    title: '{{ __('Booked!') }}',
-                                    text: 'Reservation confirmed!',
-                                    type: 'success',
-                                    allowOutsideClick: false
-                                }).then(function(){
-                                    clickedRow.remove().draw();
-                                    $('#bookingList').DataTable().ajax.reload();
-                                });
-                            })
-                            .fail(function(data){
-                                var errors = data.responseJSON;
-                                $.each(errors.errors, function (key, value) {
-                                    toastr.error(value);
-                                });
+                // START optionals
+
+                        $('.add').off('click').on('click',function(event) {
+                            event.preventDefault();
+                            var coffee_break = $('#coffee_break').val() * 6.5;
+                            var quick_lunch = $('#quick_lunch').val() * 1;
+                            var permanent_coffee = $('#permanent_coffee').val() * 7;
+                            var wifi = $('#wifi').val() * 50;
+                            var lavagna_foglimobili = $('#lavagna_foglimobili').val() * 1;
+                            var stampante = $('#stampante').val() * 25;
+                            var permanent_coffeeplus = $('#permanent_coffeeplus').val() * 1;
+                            var connessione_viacavo = $('#connessione_viacavo').val() * 1;
+                            var integrazione_permanentcoffee = $('#integrazione_permanentcoffee').val() * 1;
+                            var upgrade_banda10mb = $('#upgrade_banda10mb').val() * 1;
+                            var upgrade_banda8mb = $('#upgrade_banda8mb').val() * 1;
+                            var upgrade_banda20mb = $('#upgrade_banda20mb').val() * 1;
+                            var wirless_4mb20accessi = $('#wirless_4mb20accessi').val() * 1;
+                            var wirless_8mb35accessi = $('#wirless_8mb35accessi').val() * 1;
+                            var wirless_10mb50accessi = $('#wirless_10mb50accessi').val() * 1;
+                            var fattorino = $('#fattorino').val() * 1;
+                            // START checkbox
+                            if ($('#lavagna_interattiva').is(':checked')) {
+                                var lavagna_interattiva = 75;
+                                //console.log(lavagna_interattiva);
+                            } else {
+                                var lavagna_interattiva = 0;
+                                // console.log(lavagna_interattiva);
+                            }
+
+                            if ($('#videoproiettore').is(':checked')) {
+                                var videoproiettore = 55;
+                                //    console.log(videoproiettore);
+                            } else {
+                                var videoproiettore = 0;
+                                //    console.log(videoproiettore);
+                            }
+
+                            if ($('#videoconferenza').is(':checked')) {
+                                var videoconferenza = 45;
+                                //    console.log(videoconferenza);
+                            } else {
+                                var videoconferenza = 0;
+                                // console.log(videoconferenza);
+                            }
+
+                            if ($('#webconference').is(':checked')) {
+                                var webconference = 35;
+                                // console.log(webconference);
+                            } else {
+                                var webconference = 0;
+                                // console.log(webconference);
+                            }
+
+                            if ($('#videoregistrazione').is(':checked')) {
+                                var videoregistrazione = 25;
+                                // console.log(videoregistrazione);
+                            } else {
+                                var videoregistrazione = 0;
+                                // console.log(videoregistrazione);
+                            }
+
+                            //END checkbox
+
+                            var tot_optional = coffee_break + quick_lunch + permanent_coffee + wifi + lavagna_foglimobili + stampante + permanent_coffeeplus + connessione_viacavo
+                                + integrazione_permanentcoffee + upgrade_banda10mb + upgrade_banda8mb + upgrade_banda20mb + wirless_4mb20accessi + wirless_8mb35accessi
+                                + wirless_10mb50accessi + fattorino + lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
+
+                            var sum = 0;
+
+
+                            $('.totaloptional').each(function () {
+                                sum += parseFloat(tot_optional);
+
                             });
+                            $('.totaloptional').text(sum);
+
+                            $('.total').text(sum + price);
+
                         });
-                    });
+
+                        $('.save').off('click').on('click',function(event) {
+                            event.preventDefault();
+                            var coffee_break = $('#coffee_break').val() * 6.5;
+                            var quick_lunch = $('#quick_lunch').val() * 1;
+                            var permanent_coffee = $('#permanent_coffee').val() * 7;
+                            var wifi = $('#wifi').val() * 50;
+                            var lavagna_foglimobili = $('#lavagna_foglimobili').val() * 1;
+                            var stampante = $('#stampante').val() * 25;
+                            var permanent_coffeeplus = $('#permanent_coffeeplus').val() * 1;
+                            var connessione_viacavo = $('#connessione_viacavo').val() * 1;
+                            var integrazione_permanentcoffee = $('#integrazione_permanentcoffee').val() * 1;
+                            var upgrade_banda10mb = $('#upgrade_banda10mb').val() * 1;
+                            var upgrade_banda8mb = $('#upgrade_banda8mb').val() * 1;
+                            var upgrade_banda20mb = $('#upgrade_banda20mb').val() * 1;
+                            var wirless_4mb20accessi = $('#wirless_4mb20accessi').val() * 1;
+                            var wirless_8mb35accessi = $('#wirless_8mb35accessi').val() * 1;
+                            var wirless_10mb50accessi = $('#wirless_10mb50accessi').val() * 1;
+                            var fattorino = $('#fattorino').val() * 1;
+                            // START checkbox
+                            if ($('#lavagna_interattiva').is(':checked')) {
+                                var lavagna_interattiva = 75;
+                                //console.log(lavagna_interattiva);
+                            } else {
+                                var lavagna_interattiva = 0;
+                                // console.log(lavagna_interattiva);
+                            }
+
+                            if ($('#videoproiettore').is(':checked')) {
+                                var videoproiettore = 55;
+                                //    console.log(videoproiettore);
+                            } else {
+                                var videoproiettore = 0;
+                                //    console.log(videoproiettore);
+                            }
+
+                            if ($('#videoconferenza').is(':checked')) {
+                                var videoconferenza = 45;
+                                //    console.log(videoconferenza);
+                            } else {
+                                var videoconferenza = 0;
+                                // console.log(videoconferenza);
+                            }
+
+                            if ($('#webconference').is(':checked')) {
+                                var webconference = 35;
+                                // console.log(webconference);
+                            } else {
+                                var webconference = 0;
+                                // console.log(webconference);
+                            }
+
+                            if ($('#videoregistrazione').is(':checked')) {
+                                var videoregistrazione = 25;
+                                // console.log(videoregistrazione);
+                            } else {
+                                var videoregistrazione = 0;
+                                // console.log(videoregistrazione);
+                            }
+
+                            //END checkbox
+
+                            var tot_optional = coffee_break + quick_lunch + permanent_coffee + wifi + lavagna_foglimobili + stampante + permanent_coffeeplus + connessione_viacavo
+                                + integrazione_permanentcoffee + upgrade_banda10mb + upgrade_banda8mb + upgrade_banda20mb + wirless_4mb20accessi + wirless_8mb35accessi
+                                + wirless_10mb50accessi + fattorino + lavagna_interattiva + videoproiettore + videoconferenza + webconference + videoregistrazione;
+
+                            swal({
+                                title: roomName + '<h4 />Price Resource: &euro; ' + price + '</h4>' +
+                                                    '<h4>Otional: &euro; '+tot_optional + '</h4>'+
+                                                    '<h4>Total: &euro; '+ (price+tot_optional) +'</h4>',
+                                text: "{!! __("Are you sure to book this room?") !!}",
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#ccc',
+                                confirmButtonText: "{!! __("Yes, book it!") !!}",
+                                cancelButtonText: '{!! __('Cancel') !!}',
+                                allowOutsideClick: false
+                            })
+                                .then(function(){
+                                    var input = {
+                                        '_token': token,
+                                        'roomId' : roomId,
+                                        'roomName' : roomName,
+                                        'bookingTime': bookingTime,
+                                        'tot_optional': tot_optional,
+                                        'coffee_break' : coffee_break,
+                                        'quick_lunch' : quick_lunch,
+                                        'videoproiettore': videoproiettore,
+                                        'permanent_coffee': permanent_coffee,
+                                        'wifi': wifi,
+                                        'videoconferenza': videoconferenza,
+                                        'webconference': webconference,
+                                        'lavagna_foglimobili': lavagna_foglimobili,
+                                        'stampante': stampante,
+                                        'permanent_coffeeplus': permanent_coffeeplus,
+                                        'connessione_viacavo': connessione_viacavo,
+                                        'integrazione_permanentcoffee': integrazione_permanentcoffee,
+                                        'upgrade_banda10mb': upgrade_banda10mb,
+                                        'upgrade_banda8mb': upgrade_banda8mb,
+                                        'upgrade_banda20mb': upgrade_banda20mb,
+                                        'wirless_4mb20accessi': wirless_4mb20accessi,
+                                        'wirless_8mb35accessi': wirless_8mb35accessi,
+                                        'wirless_10mb50accessi': wirless_10mb50accessi,
+                                        'videoregistrazione': videoregistrazione,
+                                        'fattorino': fattorino,
+                                        'lavagna_interattiva': lavagna_interattiva
+                                    };
+                                    $('#addModal').modal('hide');
+                                    console.log(input);
+                                    $.ajax({
+                                        type: "post",
+                                        url: url,
+                                        data: input,
+                                        dataType: 'json'
+                                    })
+                                        .done(function(data){
+                                            swal({
+                                                title: '{{ __('Booked!') }}',
+                                                text: 'Reservation confirmed!',
+                                                type: 'success',
+                                                allowOutsideClick: false
+                                            }).then(function(){
+                                                clickedRow.remove().draw();
+                                                $('#bookingList').DataTable().ajax.reload();
+                                            });
+                                        })
+                                        .fail(function(data){
+                                            var errors = data.responseJSON;
+                                            $.each(errors.errors, function (key, value) {
+                                                toastr.error(value);
+                                            });
+                                        });
+                                });
+                        });
+                });
+
+        // END optionals
                 })
                 .fail(function(data){
                     $('#result').hide();
@@ -500,7 +593,7 @@
                         toastr.error(value);
                     });
                 });
-            });
+            })
 
         });
     </script>

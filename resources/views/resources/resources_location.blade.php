@@ -72,7 +72,7 @@
                                         </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-warning">WARNING</button>
+                            <button type="submit" class="btn btn-warning">SEND</button>
                         </form>
                         @endforeach
                     </div>

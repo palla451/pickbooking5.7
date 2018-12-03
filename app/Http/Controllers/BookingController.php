@@ -658,9 +658,8 @@ class BookingController extends Controller
                     foreach($rooms as $key=> $row){
                         $rooms[$key]['name'] = $rooms[$key]['name']."&nbsp;&nbsp;<a style='background-color:orange;padding:2px;color:white'>Upgrade!!!</a>";
                         $rooms[$key]['price'] = $price[0]->price;
-                        $rooms[$key]['action'] = '<button class="btn btn-xs btn-primary btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
-                                                    <span class="glyphicon glyphicon-edit"></span>
-                                                   Book</button>';
+                        $rooms[$key]['action'] = '<button class="btn btn-sm btn-warning btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
+                                                    <span class="glyphicon glyphicon-edit"></span>Book</button>';
                     }
 
                    return $rooms;
@@ -679,7 +678,7 @@ class BookingController extends Controller
                     // Create book button
                     $room = $rooms->each(function ($room) {
                         $bookUrl = route('bookings.store');
-                        $bookBtn = '<button class="btn btn-xs btn-primary btn-book"';
+                        $bookBtn = '<button class="btn btn-sm btn-warning btn-book data-toggle="modal" data-target="#exampleModal" data-price="' . $room->price . '" "';
                         $bookBtn .= 'data-remote="' . $bookUrl . '" data-name="' . $room->name . '" data-id="' . $room->id . '">';
                         $bookBtn .= '<span class="glyphicon glyphicon-edit"></span> ';
                         $bookBtn .= __('Book');

@@ -16,7 +16,7 @@ class ResourceController extends Controller
 {
 
     // RISERVATO ALLE RECEPTION
-    // Rendere indisponibile 1 o più risorse per un periodo
+    // Rendere indisponibile 1 o piï¿½ risorse per un periodo
     // per  lavori di ristrutturazione
 
     public function __construct()
@@ -165,7 +165,10 @@ class ResourceController extends Controller
 
 
         if ($start >= $end){
-           return 'error end is lower start';
+            echo    "<script>
+                        alert('Errore nelle date selezionate');
+                        window.location.href='/dashboard/booking/showlocation/'+ $request->locationId;
+                    </script>";
         } else {
 
             $booking_search = Booking::where('location_id','=',$request['locationId'])

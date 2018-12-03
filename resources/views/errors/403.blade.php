@@ -1,5 +1,5 @@
 @extends('errors::layout')
 
-@section('title', 'Access denied')
+@section('title', 'Errore data immessa')
 
-@section('message', 'Sorry, you have no authorization to view this page.')
+@section('message', 'Hai inserito una DATA INIZIO maggiore o uguale a quella di FINE')
