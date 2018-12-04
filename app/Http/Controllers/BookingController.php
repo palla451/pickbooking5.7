@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Location;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
 
@@ -69,11 +70,9 @@ class BookingController extends Controller
 
     public function store(StoreBooking $request)
     {
-
         $db = DB::connection('mysql2');
 
         $user = Auth::user();
-
 
         $data = $request->all();
 
@@ -92,11 +91,13 @@ class BookingController extends Controller
 
         $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $time[0])
             ->toDateTimeString();
+
         $end = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $time[1])
             ->toDateTimeString();
 
         $start_hour = explode(" ", $start);
         $end_hour = explode(" ", $end);
+
 
         $diff_sec = strtotime($end_hour[1]) - strtotime($start_hour[1]);
 
@@ -603,8 +604,10 @@ class BookingController extends Controller
         $bookingTime = explode(' - ', $time);
 
 
-        $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTime[0]);
-        $end = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTime[1]);
+        $start = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTime[0])->subMinute(15);
+        $end = Carbon::createFromFormat(DateFormat::DATE_RANGE_PICKER, $bookingTime[1])->addMinutes(15);
+
+      //  return $end . ' - ' . $start;
 
         $start_hour = explode(" ", $start);
         $end_hour = explode(" ", $end);
@@ -614,7 +617,11 @@ class BookingController extends Controller
 
         // Todo in case of duration is <> 4 end >8 //
 
-        $duration = (integer)$diff_sec / 3600;
+
+
+        $duration = intval((integer)$diff_sec / 3600);
+
+      //  return $duration;
 
         $diff_day = (strtotime($end_hour[0]) - strtotime($start_hour[0])) / 86400;
 
@@ -651,29 +658,34 @@ class BookingController extends Controller
                              ->where('location','=',$data['location'])
                                 ->get(['name', 'pax', 'id', 'location', 'type']);
 
-                    $rooms = json_decode($resources,1);
+                    if($resources->count()==0){
 
-                 //   return $rooms;
+                        return false;
 
-                    foreach($rooms as $key=> $row){
-                        $rooms[$key]['name'] = $rooms[$key]['name']."&nbsp;&nbsp;<a style='background-color:orange;padding:2px;color:white'>Upgrade!!!</a>";
-                        $rooms[$key]['price'] = $price[0]->price;
-                        $rooms[$key]['action'] = '<button class="btn btn-sm btn-warning btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
+                    } else {
+
+                        $rooms = json_decode($resources,1);
+
+                        foreach($rooms as $key=> $row){
+                            $rooms[$key]['name'] = $rooms[$key]['name']."&nbsp;&nbsp;<a style='background-color:orange;padding:2px;color:white'>Upgrade!!!</a>";
+                            $rooms[$key]['price'] = $price[0]->price;
+                            $rooms[$key]['action'] = '<button class="btn btn-sm btn-warning btn-book" data-remote="' . route('bookingstore.update',$price[0]->price) . '" data-name="' . $rooms[$key]['name'] . '"   data-price="' . $rooms[$key]['price'] . '" data-id="' . $rooms[$key]['id'] . '" >
                                                     <span class="glyphicon glyphicon-edit"></span>Book</button>';
+                        }
+
+                        return $rooms;
+
+                        $result = [];
+
+                        foreach ($rooms as $key => $value) {
+                            $result[] = $value;
+                        }
+
+                        return response()->make($result);
                     }
 
-                   return $rooms;
 
-                    $result = [];
-
-                    foreach ($rooms as $key => $value) {
-                        $result[] = $value;
-                    }
-
-                    return response()->make($result);
-
-
-                }else {
+                } else {
 
                     // Create book button
                     $room = $rooms->each(function ($room) {

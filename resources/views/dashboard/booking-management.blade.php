@@ -157,6 +157,11 @@
                             </form>
                             <div id="result">
                                 <h2>{{ __('Available room') }}:</h2>
+
+                                <div class="alert alert-danger" style="display: none">
+                                    <h2>Cambia la ricerca</h2>
+                                </div>
+
                                 <table id="searchResult" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                      <thead>
                                      <tr>
@@ -185,11 +190,17 @@
                 </div>
             </div> <!-- /.col -->
         </div> <!-- /.row -->
+
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                {{ session()->get('message') }}
+            </div>
+        @endif
     </section>
 
 
-
 @include('optionals.modal_form')
+
 
 @endsection
 
@@ -319,6 +330,8 @@
             $('#search').on('submit', function (event) {
                 event.preventDefault();
                 var data = $(this).serialize();
+
+                console.log('data');
 
             //   var bookingTime = document.getElementById('bookingTime').value;
                 var bookingTimeUno = document.getElementById('bookingTimeUno').value;
